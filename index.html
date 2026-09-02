@@ -91,6 +91,7 @@
       .brand .t1{ font-size:16px; } .sku-name{ font-size:14px; } .num b{ font-size:22px; }
     }
   </style>
+  <script src="sn_data.js"></script>
 </head>
 <body>
 <div class="app">
@@ -293,7 +294,9 @@ function cardHTML(it){
     + '</div>'
     + '<div class="sku-name">' + it.name + '</div>'
     + '<div class="card-f"><span class="wh">📍 <b>' + it.wh + '</b></span>'
-    + '<div class="nums single"><div class="num"><b>' + it.q + '</b><i>现存量</i></div></div></div></div>';
+    + '<div class="nums single"><div class="num"><b>' + it.q + '</b><i>现存量</i></div></div>'
+    + snBlockHTML(it)
+    + '</div>';
 }
 
 // ==================== 虚拟列表（增量渲染） ====================
