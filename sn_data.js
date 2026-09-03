@@ -26,6 +26,7 @@ function fillMenu(menu, key){
   }
   menu.innerHTML = '<div class="sn-menu-h"><span>序列号 '+arr.length+' 条</span>'
     + '<span class="sn-legend"><i class="dot ok"></i>在库 '+okN+'<i class="dot no"></i>不在库 '+noN+'</span></div>'
+    + '<div class="sn-tip">●在库＝现在还在店里的实物（数量＝现存量）<br>○不在库＝已离店记录（多已售出/调出/退供/送修），不是别家店的货，串码只是还留在本店账上</div>'
     + lines;
 }
 window.snToggle = function(ev, btn){
@@ -65,6 +66,7 @@ var css = '<style>'
   + '.sn-menu-h{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;font-weight:700;color:#4b5168;margin-bottom:8px;padding-bottom:7px;border-bottom:1px dashed #f0eef6}'
   + '.sn-legend{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:500;color:#9aa0b4}'
   + '.sn-legend .dot{margin:0 1px}'
+  + '.sn-tip{font-size:10.5px;line-height:1.55;color:#8a90a6;background:#faf9fe;border:1px dashed #ece8f8;border-radius:8px;padding:7px 9px;margin-bottom:8px}'
   + '.sn-line{display:flex;align-items:center;gap:8px;padding:4px 2px;border-bottom:1px dashed #f4f2f9}'
   + '.sn-line:last-child{border-bottom:none}'
   + '.sn-line .dot{width:7px;height:7px;border-radius:50%;flex:0 0 auto}'
