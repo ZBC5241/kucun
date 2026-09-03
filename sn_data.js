@@ -9,25 +9,28 @@ window.snTriggerHTML = function(it){
   var key = (it.code||"") + String.fromCharCode(1) + (it.wh||"");
   var arr = SN_INDEX[key];
   if (!arr || !arr.length) return "";
+  // 只统计在库；不在库不显示（晨哥决定）
+  var okN=0;
+  for (var i=0;i<arr.length;i++){ if(arr[i][1]==="在库") okN++; }
+  if(okN===0) return "";
   return '<span class="sn-dd" data-code="'+escHtml(it.code)+'" data-wh="'+escHtml(it.wh)+'" onclick="snToggle(event,this)">'
-    + '<b>'+arr.length+'</b> 序列号 <i class="caret">▾</i>'
+    + '<b>'+okN+'</b> 序列号 <i class="caret">▾</i>'
     + '<span class="sn-menu" style="display:none"></span>'
     + '</span>';
 };
 function fillMenu(menu, key){
   var arr = (typeof SN_INDEX !== "undefined") ? SN_INDEX[key] : [];
-  var okN=0, noN=0, lines="";
+  var okN=0, lines="";
   for (var i=0;i<arr.length;i++){
-    var ok = (arr[i][1]==="在库");
-    if(ok) okN++; else noN++;
-    lines += '<div class="sn-line"><span class="dot '+(ok?"ok":"no")+'"></span>'
-      + '<span class="sn-no">'+escHtml(arr[i][0])+'</span>'
-      + '<span class="sn-st">'+(ok?"在库":"不在库")+'</span></div>';
+    if(arr[i][1] !== "在库") continue;
+    okN++;
+    lines += '<div class="sn-line">'+escHtml(arr[i][0])+'</div>';
   }
-  menu.innerHTML = '<div class="sn-menu-h"><span>序列号 '+arr.length+' 条</span>'
-    + '<span class="sn-legend"><i class="dot ok"></i>在库 '+okN+'<i class="dot no"></i>不在库 '+noN+'</span></div>'
-    + '<div class="sn-tip">●在库＝现在还在店里的实物（数量＝现存量）<br>○不在库＝已离店记录（多已售出/调出/退供/送修），不是别家店的货，串码只是还留在本店账上</div>'
-    + lines;
+  if(okN===0){
+    menu.innerHTML = '<div class="sn-menu-h">无在库序列号</div>';
+    return;
+  }
+  menu.innerHTML = '<div class="sn-menu-h">序列号 '+okN+' 个</div>' + lines;
 }
 window.snToggle = function(ev, btn){
   if(ev && ev.stopPropagation) ev.stopPropagation();
@@ -62,18 +65,10 @@ var css = '<style>'
   + '.sn-dd b{font-size:12.5px}'
   + '.sn-dd .caret{font-style:normal;font-size:10px;opacity:.7;transition:transform .15s}'
   + '.sn-dd.open .caret{transform:rotate(180deg)}'
-  + '.sn-menu{position:absolute;top:calc(100% + 6px);right:0;min-width:250px;max-height:300px;overflow:auto;background:#fff;border:1px solid #e6e2f0;border-radius:12px;box-shadow:0 10px 30px rgba(40,30,80,.18);padding:10px 12px;z-index:80;font-size:12.5px;color:#2d3340}'
-  + '.sn-menu-h{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;font-weight:700;color:#4b5168;margin-bottom:8px;padding-bottom:7px;border-bottom:1px dashed #f0eef6}'
-  + '.sn-legend{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:500;color:#9aa0b4}'
-  + '.sn-legend .dot{margin:0 1px}'
-  + '.sn-tip{font-size:10.5px;line-height:1.55;color:#8a90a6;background:#faf9fe;border:1px dashed #ece8f8;border-radius:8px;padding:7px 9px;margin-bottom:8px}'
-  + '.sn-line{display:flex;align-items:center;gap:8px;padding:4px 2px;border-bottom:1px dashed #f4f2f9}'
+  + '.sn-menu{position:absolute;top:calc(100% + 6px);right:0;min-width:300px;max-width:min(420px,92vw);max-height:320px;overflow:auto;background:#fff;border:1px solid #e6e2f0;border-radius:12px;box-shadow:0 10px 30px rgba(40,30,80,.18);padding:10px 14px;z-index:80;font-size:13px;color:#2d3340}'
+  + '.sn-menu-h{font-size:12.5px;font-weight:700;color:#4b5168;margin-bottom:8px;padding-bottom:7px;border-bottom:1px dashed #f0eef6}'
+  + '.sn-line{padding:6px 4px;border-bottom:1px dashed #f4f2f9;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;color:#2d3340;letter-spacing:.5px;word-break:break-all}'
   + '.sn-line:last-child{border-bottom:none}'
-  + '.sn-line .dot{width:7px;height:7px;border-radius:50%;flex:0 0 auto}'
-  + '.sn-line .dot.ok{background:#22c55e}'
-  + '.sn-line .dot.no{background:#cbd0dd}'
-  + '.sn-no{flex:1;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:#2d3340;word-break:break-all}'
-  + '.sn-st{font-size:10.5px;color:#9aa0b4;flex:0 0 auto}'
   + '</style>';
 if (document && document.head) document.head.insertAdjacentHTML("beforeend", css);
 })();
