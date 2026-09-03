@@ -291,11 +291,11 @@ function cardHTML(it){
   return '<div class="card">'
     + '<div class="card-h"><span class="code">' + it.code + '</span>'
     + (it.demo ? '<span class="demo">🟠演示机</span>' : '')
+    + snTriggerHTML(it)
     + '</div>'
     + '<div class="sku-name">' + it.name + '</div>'
     + '<div class="card-f"><span class="wh">📍 <b>' + it.wh + '</b></span>'
     + '<div class="nums single"><div class="num"><b>' + it.q + '</b><i>现存量</i></div></div>'
-    + snBlockHTML(it)
     + '</div>';
 }
 
