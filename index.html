@@ -1507,7 +1507,7 @@ function summaryHTML(stores,stocks,demosCount,maxStoreQty){
 }
 function queryStoreContextHTML(res){if(!res||!res.storeIntent||!res.storeIntent.store)return '';const label=res.storeIntent.store.replace(/^华为/,'').replace('智能生活馆西安','').replace('授权体验店','').replace('至臻店','').replace('合作店','');return '<div class="v105-query-store-context"><span>限定门店</span><b>'+escHTML(label)+'</b><em>只显示该店当前库存</em></div>';}
 function storeOnlyPromptHTML(res){const label=res&&res.storeIntent?res.storeIntent.alias:'';return '<div class="qv58-empty"><div class="qv58-empty-title">已识别门店 '+escHTML(label)+'</div><div class="qv58-empty-sub">请在门店词前补充商品，例如“x7 16 '+escHTML(label)+'”或“WATCH5 紫 '+escHTML(label)+'”。</div></div>';}
-function cardHTMLStoreScoped(it){const zero=saleStockValue(it)<=0;return '<div class="qv62-card'+(zero?' v105-store-zero':'')+'"><div class="qv62-head"><div class="qv62-name" title="'+escHTML(it.name)+'"><span>'+escHTML(it.name)+'</span></div><div class="qv62-actions"><button type="button" class="qv62-sn-btn" data-sku="'+escHTML(it.code)+'">序列号</button></div></div><div class="qv62-sn-box" data-sn-box hidden></div><div class="qv62-row"><div class="qv62-main"><div class="qv62-code">'+escHTML(it.code)+'</div><div class="qv62-meta2"><span class="qv62-store"><i></i>'+escHTML(it._baseStore||it.wh)+'</span><span class="qv62-cat">'+escHTML(it.cat||'其他')+'</span>'+(zero?'<span class="v105-zero-badge">当前门店无货</span>':'')+'</div></div><div class="qv62-qty"><b>'+saleStockValue(it)+'</b><span>库存</span></div></div></div>';}
+function cardHTMLStoreScoped(it){const zero=saleStockValue(it)<=0;return '<div class="qv62-card'+(zero?' v105-store-zero':'')+'"><div class="qv62-head"><div class="qv62-name" title="'+escHTML(it.name)+'"><span>'+escHTML(it.name)+'</span></div><div class="qv62-actions"><button type="button" class="qv62-sn-btn" data-sku="'+escHTML(it.code)+'" data-wh="'+escHTML(it._baseStore||it.wh||'')+'">序列号</button></div></div><div class="qv62-sn-box" data-sn-box hidden></div><div class="qv62-row"><div class="qv62-main"><div class="qv62-code">'+escHTML(it.code)+'</div><div class="qv62-meta2"><span class="qv62-store"><i></i>'+escHTML(it._baseStore||it.wh)+'</span><span class="qv62-cat">'+escHTML(it.cat||'其他')+'</span>'+(zero?'<span class="v105-zero-badge">当前门店无货</span>':'')+'</div></div><div class="qv62-qty"><b>'+saleStockValue(it)+'</b><span>库存</span></div></div></div>';}
 function fitSkuNames(){
   requestAnimationFrame(()=>{
     resultArea.querySelectorAll('.qv62-name').forEach(el=>{
@@ -2018,35 +2018,59 @@ if(readSession())openWorkbench();else showLogin();
 (function(){
   function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   var area=document.getElementById('queryPage');
+  // —— 实时后端探测 ——
+  // file:// 双击打开时相对路径会解析成 file:///api/sn 必然失败，故本地打开一律用绝对地址。
+  var IS_LOCAL_SERVED = (location.protocol==='http:'||location.protocol==='https:')
+                        && (location.hostname==='127.0.0.1'||location.hostname==='localhost');
+  var BACKEND = IS_LOCAL_SERVED ? '' : 'http://127.0.0.1:8799';
+  var backendOk = null;
+  function probe(){
+    if(backendOk!==null) return Promise.resolve(backendOk);
+    if(!BACKEND){ backendOk=true; return Promise.resolve(true); }
+    return new Promise(function(res){
+      var done=false, t=setTimeout(function(){ if(!done){done=true;backendOk=false;res(false);} },1500);
+      fetch(BACKEND+'/api/health',{cache:'no-store'}).then(function(r){return r.json();})
+        .then(function(d){ if(!done){done=true;clearTimeout(t);backendOk=!!(d&&d.ok);res(backendOk);} })
+        .catch(function(){ if(!done){done=true;clearTimeout(t);backendOk=false;res(false);} });
+    });
+  }
+  function renderSnap(box,btn,sku){
+    var sns=(window.SN_SNAPSHOT&&window.SN_SNAPSHOT[sku])||[];
+    if(sns.length){
+      box.innerHTML='<div class="qv62-sn-title">序列号 '+sns.length+' 个（离线快照）</div><div class="qv62-sn-list">'
+        +sns.map(function(x){return '<div class="qv62-sn-row">'+esc(x)+'</div>';}).join('')+'</div>';
+    }else{
+      box.innerHTML='<div class="qv62-sn-title">序列号 0 个（离线快照）</div><div class="qv62-sn-empty">无在库序列号</div>';
+    }
+    btn.textContent='收起';
+  }
   if(area){
     area.addEventListener('click',function(e){
-      var btn=e.target.closest('.qv62-sn-btn');
-      if(!btn)return;
+      var btn=e.target.closest('.qv62-sn-btn'); if(!btn)return;
       var card=btn.closest('.qv62-card'); if(!card)return;
-      var nm=card.querySelector('.qv62-name'); var name=nm?nm.textContent.trim():'';
-      var sku=btn.getAttribute('data-sku');
+      var sku=btn.getAttribute('data-sku')||'';
+      var wh=btn.getAttribute('data-wh')||'';
       var box=card.querySelector('[data-sn-box]'); if(!box)return;
       if(!box.hasAttribute('hidden')){ box.setAttribute('hidden',''); btn.textContent='序列号'; return; }
       btn.disabled=true; btn.textContent='查询中…';
       box.removeAttribute('hidden'); box.innerHTML='<div class="qv62-sn-loading">正在查询实时序列号…</div>';
-      fetch('/api/sn?sku='+encodeURIComponent(sku)).then(function(r){return r.json();}).then(function(d){
-        var cnt=Array.isArray(d.sns)?d.sns.length:(d.count||0);
-        var ms=d.pullMs||0;
-        if(!cnt){ box.innerHTML='<div class="qv62-sn-title">序列号 0 个（实时 · '+ms+'ms） · '+escHTML(name)+'</div><div class="qv62-sn-empty">无在库序列号</div>'; }
-        else{
-          var items=d.sns.map(function(s){return '<div class="qv62-sn-row">'+esc(String(s))+'</div>';}).join('');
-          box.innerHTML='<div class="qv62-sn-title">序列号 '+cnt+' 个（实时 · '+ms+'ms） · '+escHTML(name)+'</div><div class="qv62-sn-list">'+items+'</div>';
-        }
-        btn.textContent='收起';
-      }).catch(function(err){
-        var _sns=(window.SN_SNAPSHOT&&window.SN_SNAPSHOT[sku])||[];
-        if(_sns.length){
-          var _it=_sns.map(function(s){return '<div class="qv62-sn-row">'+esc(String(s))+'</div>';}).join('');
-          box.innerHTML='<div class="qv62-sn-title">序列号 '+_sns.length+' 个（快照 09-03） · '+escHTML(name)+'</div><div class="qv62-sn-list">'+_it+'</div>';
-        }else{
-          box.innerHTML='<div class="qv62-sn-title">序列号 0 个（快照 09-03） · '+escHTML(name)+'</div><div class="qv62-sn-empty">该 SKU 快照内无在库序列号</div>';
-        }
-        btn.textContent='收起';
+      probe().then(function(ok){
+        if(!ok){ renderSnap(box,btn,sku); btn.disabled=false; return; }
+        var url=BACKEND+'/api/sn?sku='+encodeURIComponent(sku)+(wh?('&wh='+encodeURIComponent(wh)):'');
+        return fetch(url).then(function(r){return r.json();}).then(function(d){
+          var sns=Array.isArray(d.sns)?d.sns:[];
+          var scope=d.scope?(esc(String(d.scope))):'实时';
+          if(!sns.length){
+            box.innerHTML='<div class="qv62-sn-title">序列号 0 个（'+scope+'）</div><div class="qv62-sn-empty">无在库序列号</div>';
+          }else{
+            var items=sns.map(function(x){
+              var v=(x&&typeof x==='object')?(x.sn||''):x;
+              return '<div class="qv62-sn-row">'+esc(v)+'</div>';
+            }).join('');
+            box.innerHTML='<div class="qv62-sn-title">序列号 '+sns.length+' 个（'+scope+'）</div><div class="qv62-sn-list">'+items+'</div>';
+          }
+          btn.textContent='收起';
+        }).catch(function(){ renderSnap(box,btn,sku); });
       }).finally(function(){ btn.disabled=false; });
     });
   }
