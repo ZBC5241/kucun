@@ -682,7 +682,7 @@ body.v55-mode #queryPage{display:none!important}
 .qv7c-header{position:sticky;top:0;z-index:30;padding:2px 1px 10px;background:linear-gradient(180deg,rgba(244,245,248,.995) 0%,rgba(244,245,248,.97) 80%,rgba(244,245,248,0) 100%);backdrop-filter:blur(14px)}
 .qv7c-panel{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:18px;background:#fff;border:1px solid #e7eaf1;box-shadow:0 10px 26px rgba(25,31,51,.05)}
 .qv7c-left{display:flex;align-items:center;gap:12px;min-width:0;flex:1}
-.qv7c-chip{width:46px;height:46px;flex:none;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,#7c3aed 0%,#6d28d9 100%);border:none;color:#fff;font-size:13px;font-weight:900;box-shadow:0 8px 20px rgba(124,58,237,.38),inset 0 1px 0 rgba(255,255,255,.15);letter-spacing:-.5px}
+.qv7c-chip{width:46px;height:46px;flex:none;border-radius:16px;display:grid;place-items:center;background:linear-gradient(180deg,#f7f5ff 0%,#efeaff 100%);border:1px solid #e2dbff;box-shadow:inset 0 1px 0 rgba(255,255,255,.9);color:#6f5de6;font-size:12px;font-weight:920}
 .qv7c-copy{min-width:0;flex:1}
 .qv7c-title{font-size:22px;line-height:1.05;font-weight:920;color:var(--v55-ink);letter-spacing:-.52px}
 .qv7c-sub{font-size:10.6px;color:#8991a6;margin-top:4px;line-height:1.4}
@@ -1072,7 +1072,7 @@ button:focus-visible{outline:3px solid #8e83e7;outline-offset:3px}
 .search-box{display:flex;align-items:center;gap:8px;min-height:58px;padding:8px 12px;border:1px solid rgba(255,255,255,.98);border-radius:30px;background:rgba(255,255,255,.72);box-shadow:0 12px 38px rgba(43,49,77,.14),inset 0 1px 1px #fff,inset 0 -1px 1px rgba(120,121,151,.09);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);transition:box-shadow .2s,background .2s}
 .search-box:focus-within{background:rgba(255,255,255,.9);box-shadow:0 12px 36px rgba(71,57,120,.12),0 0 0 3px rgba(111,94,209,.14),inset 0 1px 0 white}
 .search-box .ico{display:grid;place-items:center;flex:none;width:26px;color:#7a7495;font-size:28px;line-height:1}
-.search-box input{flex:1;width:100%;min-width:0;outline:none;border:0;background:transparent;color:var(--ink);font-size:16px;font-weight:400;height:40px;letter-spacing:-.4px}.search-box input::placeholder{color:#858591;font-size:13px;letter-spacing:-.3px}
+.search-box input{flex:1;width:100%;min-width:0;outline:none;border:0;background:transparent;color:var(--ink);font-size:15.5px;font-weight:400;height:40px;letter-spacing:-.4px}.search-box input::placeholder{color:#858591;font-size:13px;letter-spacing:-.3px}
 .search-box .clr{display:none;align-items:center;justify-content:center;flex:none;width:36px;height:36px;border:0;border-radius:50%;background:rgba(111,111,137,.10);color:#737585;font-size:12px}.search-box.has .clr{display:flex}
 #v54Nav{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:97;display:flex;justify-content:center;width:150px;padding:5px;border:1px solid rgba(255,255,255,.96);border-radius:32px;background:rgba(255,255,255,.58);box-shadow:0 8px 28px rgba(47,52,88,.13),inset 0 1px 1px white;backdrop-filter:blur(26px) saturate(180%);-webkit-backdrop-filter:blur(26px) saturate(180%)}
 .qv120-nav-spacer{display:none}#v54Nav button{width:100%;min-height:50px;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid rgba(255,255,255,.65);border-radius:27px;background:linear-gradient(150deg,rgba(232,226,255,.85),rgba(237,233,253,.6));color:var(--accent);font-size:13px;font-weight:600;box-shadow:inset 0 1px 1px #fff}#v54Nav svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -1198,12 +1198,12 @@ body{
   padding:8px 11px!important;
   gap:8px!important;
   overflow:hidden!important;
-  border-radius:29px!important;
-  border:1px solid rgba(255,255,255,.96)!important;
-  background:linear-gradient(145deg,rgba(255,255,255,.80),rgba(255,255,255,.60))!important;
+  border-radius:19px!important;
+  border:1px solid #dfe3ee!important;
+  background:rgba(255,255,255,.97)!important;
   box-shadow:0 14px 38px rgba(43,49,77,.125),inset 0 1px 0 rgba(255,255,255,.98)!important;
-  backdrop-filter:blur(28px) saturate(175%)!important;
-  -webkit-backdrop-filter:blur(28px) saturate(175%)!important;
+  backdrop-filter:blur(18px)!important;
+  -webkit-backdrop-filter:blur(18px)!important;
 }
 #queryPage>#qv63SearchFloat .search-box:focus-within{
   border-color:rgba(183,173,232,.76)!important;
@@ -1440,11 +1440,11 @@ body{min-height:100vh!important;background:
 #queryPage>#qv63SearchFloat::before,#queryPage>#qv63SearchFloat::after{content:none!important;display:none!important}
 #queryPage>#qv63SearchFloat .search-box{
   position:relative!important;width:100%!important;max-width:100%!important;min-width:0!important;height:auto!important;min-height:58px!important;
-  margin:0!important;padding:8px 12px!important;overflow:hidden!important;border-radius:30px!important;
-  background:linear-gradient(145deg,rgba(255,255,255,.80),rgba(255,255,255,.61))!important;
-  border:1px solid rgba(255,255,255,.96)!important;
+  margin:0!important;padding:8px 12px!important;overflow:hidden!important;border-radius:19px!important;
+  background:rgba(255,255,255,.97)!important;
+  border:1px solid #dfe3ee!important;
   box-shadow:0 12px 32px rgba(44,51,78,.10),inset 0 1px 0 rgba(255,255,255,.98)!important;
-  backdrop-filter:blur(26px) saturate(175%)!important;-webkit-backdrop-filter:blur(26px) saturate(175%)!important;
+  backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important;
 }
 #queryPage>#qv63SearchFloat .search-box::before,#queryPage>#qv63SearchFloat .search-box::after{content:none!important;display:none!important}
 #queryPage>#qv63SearchFloat .search-box:focus-within{
@@ -1644,10 +1644,10 @@ body{
   position:relative!important;display:flex!important;align-items:center!important;
   width:100%!important;max-width:100%!important;min-width:0!important;height:auto!important;min-height:58px!important;
   margin:0!important;padding:8px 12px!important;gap:8px!important;overflow:hidden!important;
-  border-radius:29px!important;border:1px solid rgba(255,255,255,.88)!important;outline:0!important;
-  background:linear-gradient(145deg,rgba(255,255,255,.66),rgba(255,255,255,.48))!important;
+  border-radius:19px!important;border:1px solid #dfe3ee!important;outline:0!important;
+  background:rgba(255,255,255,.97)!important;
   box-shadow:0 10px 28px rgba(43,49,75,.10),inset 0 1px 0 rgba(255,255,255,.94)!important;
-  backdrop-filter:blur(25px) saturate(170%)!important;-webkit-backdrop-filter:blur(25px) saturate(170%)!important;
+  backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important;
   transition:border-color .18s ease,background .18s ease,box-shadow .18s ease,transform .18s ease!important;
 }
 #queryPage>#qv63SearchFloat .search-box::before,#queryPage>#qv63SearchFloat .search-box::after{content:none!important;display:none!important}
@@ -1991,15 +1991,39 @@ body{background:radial-gradient(circle at 10% 0%,rgba(120,104,220,.16),transpare
 
 
 </style>
+
+<!-- 1:1 对齐原版：修正被 !important 响应式规则覆盖的字体/间距/头部“更新于”标签 -->
+<style id="align1to1-final">
+#queryPage .qv7c-chip{font-size:10px!important;letter-spacing:.2px!important}
+#queryPage .search-box input{font-size:15.5px!important;letter-spacing:-.08px!important}
+#queryPage>#qv63SearchFloat .search-box input{font-size:15.5px!important;letter-spacing:-.08px!important}
+#queryPage .qv116-actions .updated{
+  font-size:9.2px!important;font-weight:400!important;color:#9aa0b1!important;
+  letter-spacing:normal!important;line-height:11.04px!important;
+  background:transparent!important;border:0!important;padding:0!important;border-radius:0!important;
+  display:flex!important;flex-direction:row!important;align-items:center!important;min-height:0!important;
+  white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;
+}
+#queryPage .qv116-actions .updated .qv116-update-label{
+  font-size:8.5px!important;font-weight:650!important;color:#9a91b7!important;
+  letter-spacing:normal!important;line-height:10.2px!important;
+  background:transparent!important;border:0!important;padding:0!important;display:block!important;
+}
+#queryPage .qv116-actions .updated b{
+  font-size:9.2px!important;font-weight:780!important;color:#6f5de6!important;
+  letter-spacing:-.08px!important;line-height:11.04px!important;
+  background:transparent!important;border:0!important;padding:0!important;display:block!important;
+}
+</style>
 </head>
 <body data-page-node-id="LAE1HzDQ1FSZ9VLWKiCaaO">
 <section class="v111-login" id="v111Login" aria-label="登录" data-page-node-id="5AkEhZseN40IBGPY58YCD5">
   <form class="v111-login-card" id="v111LoginForm" autocomplete="on" data-page-node-id="md8IbmOEZb0vn8YWzhrq2s">
     <div class="v111-login-mark" data-page-node-id="Nr0BAp7SE6UskA9WlaJe6I">库存</div>
-    <h1 data-page-node-id="aluIC8ZDxaXS0M8u8bmCsr">门店库存查询</h1>
+    <h1 data-page-node-id="aluIC8ZDxaXS0M8u8bmCsr">库存查询系统</h1>
     <label class="v111-field" data-page-node-id="accF"><span data-page-node-id="accS">账号</span><input id="v111User" name="account" type="text" autocomplete="username" required data-page-node-id="accI"></label>
     <label class="v111-field" data-page-node-id="YqqK9WgLFL3V9anbnSmjcs"><span data-page-node-id="uJqnyn4stkkmbbM5R9vaRE">密码</span><input id="v111Pass" name="password" type="password" autocomplete="current-password" required data-page-node-id="zWB907XIcAgRfsVGgwAFlw"></label>
-    <button class="v111-submit" type="submit" data-page-node-id="p2zWKvPesyzQA0DLXU5EoB">进入查询</button>
+    <button class="v111-submit" type="submit" data-page-node-id="p2zWKvPesyzQA0DLXU5EoB">登录</button>
     <div class="v111-login-error" id="v111LoginError" role="alert" data-page-node-id="WFFwzRMi6f0SumFE2JBCqM"></div>
   </form>
 </section>
@@ -2013,9 +2037,9 @@ body{background:radial-gradient(circle at 10% 0%,rgba(120,104,220,.16),transpare
           <div class="qv7c-sub" data-page-node-id="DuHoXgBTO3OqZqKl3jeHIP">商品库存精准查询</div>
         </div>
       </div>
-      <div class="qv7c-right" data-page-node-id="qv7cRight">
-        <button class="v111-logout" id="v111Logout" type="button" data-page-node-id="VWGjgi97KrIUimwQ8DRtso">退出登录</button>
-        <div class="qv7c-updated" data-page-node-id="qv7cUpdated">更新于 <b id="updateTime" data-page-node-id="TNNK0M5Yl55qk5clawF06P">2026-09-04 15:17</b></div>
+      <div class="qv116-actions">
+        <button class="v111-logout" id="v111Logout" type="button">退出登录</button>
+        <div class="updated"><span class="qv116-update-label">更新于</span><b id="updateTime">2026-09-04 15:17</b></div>
       </div>
     </div>
   </header>
@@ -2949,7 +2973,7 @@ form?.addEventListener('submit',async e=>{
     if(digest===PASS_SHA256){writeSession(u);pass.value='';openWorkbench()}
     else{error.textContent='密码错误，请重新输入';pass.value='';pass.focus()}
   }catch(err){error.textContent='当前浏览器无法完成登录验证，请换用 Chrome / Edge 重试'}
-  finally{submitting=false;if(btn){btn.disabled=false;btn.textContent='进入查询'}}
+  finally{submitting=false;if(btn){btn.disabled=false;btn.textContent='登录'}}
 });
 logout?.addEventListener('click',()=>{clearSession();showLogin()});
 window.LJC_AUTH={version:AUTH_VERSION,isSignedIn:signedIn,expiresInDays:1,logout:()=>{clearSession();showLogin()}};
