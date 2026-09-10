@@ -2580,9 +2580,7 @@ searchInput.addEventListener('compositionend',()=>{isComposing=false;scheduleRen
 searchInput.addEventListener('input',()=>{if(!isComposing)scheduleRender(false);});
 searchInput.addEventListener('keydown',e=>{if(e.key==='Escape'){searchInput.value='';showDemo=false;render();}else if(e.key==='Enter')scheduleRender(true);});
 clrBtn.onclick=()=>{searchInput.value='';showDemo=false;searchInput.focus();render();};
-function syncFloatingSearch(){const el=document.getElementById('qv63SearchFloat');if(!el)return;const vv=window.visualViewport;if(!vv){el.style.bottom='94px';return;}const keyboard=Math.max(0,innerHeight-vv.height-vv.offsetTop);el.style.bottom=(document.activeElement===searchInput&&keyboard>120)?(keyboard+10)+'px':'94px';}
-if(window.visualViewport){visualViewport.addEventListener('resize',syncFloatingSearch);visualViewport.addEventListener('scroll',syncFloatingSearch);}
-searchInput.addEventListener('focus',syncFloatingSearch);searchInput.addEventListener('blur',()=>setTimeout(syncFloatingSearch,80));
+// FIX: 移除 syncFloatingSearch —— 移动端搜索框固定底部，避免键盘弹出时被 JS 提到屏幕中间遮挡结果。
 window.__queryAudit={searchInventory,searchInventoryCore,parseQueryStoreIntent,appendSearchQualifierPreserveStore,tokenize,skuCatalog,scopedRows,rowsByCode,fitSkuNames,QUERY_STORES,stockValue:saleStockValue,versionTagsOfText,functionalVariantOfText,normalizeSearchChars,normalizeCapacityInQuery,dataDiagnostics:window.LJC_DATA_DIAGNOSTICS,buildDeviceQueryContext};
 render();
 </script>
