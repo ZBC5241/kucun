@@ -311,7 +311,11 @@ function __ljcNormalizeRow(r){
     mem:__ljcText(r.mem),color:__ljcText(r.color),demo:__ljcBool(r.demo),hw:__ljcBool(r.hw)
   };
 }
-const inventoryData=inventoryDataRaw.map(__ljcNormalizeRow);
+// ⛔ 无用库排除名单（2026-09-13）：这些仓库的库存结果不参与任何查询——不进索引、不可搜、不下发。
+// 按「归一化仓名」匹配：连「演示机-华为大库陕西鸿讯分库」这类前缀变体一并排除。
+const EXCLUDED_WAREHOUSES=new Set(['华为大库陕西鸿讯分库']);
+const __ljcScrubDemoPrefix=v=>String(v||'').trim().replace(/^(演示机|演示样机|样机|体验机|体验样机|陈列哑机|陈列样机|展示机|哑机)[-－—_]?/,'');
+const inventoryData=inventoryDataRaw.map(__ljcNormalizeRow).filter(r=>!EXCLUDED_WAREHOUSES.has(__ljcScrubDemoPrefix(r.wh)));
 window.LJC_DATA_DIAGNOSTICS=Object.freeze({
   rawRows:inventoryDataRaw.length,normalizedRows:inventoryData.length,
   missingIdentity:inventoryData.filter(r=>!r.code||!r.name||!r.wh).length,
