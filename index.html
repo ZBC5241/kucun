@@ -246,6 +246,25 @@ body.lg-lite .lg-orb{filter:blur(28px);opacity:.28}body.lg-lite .qv62-card:hover
   #queryPage .qv62-card{padding:12px 14px!important;border-radius:19px!important}
 }
 </style>
+<style id="query-spacing-unify-v2">
+/* 「查库存」汇总条对齐 kucunos（v2.1）——布局模型 + mini 卡片视觉，仅 #queryPage，分断点 */
+@media(max-width:767px){
+  #queryPage .qv66-overview{display:block!important;position:relative!important;background:#fff!important;border:1px solid #e7e9f0!important;border-radius:14px!important;padding:8px 78px 8px 8px!important;margin-top:3px!important;box-shadow:none!important}
+  #queryPage .qv66-mini-grid{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:5px!important;flex:none!important;width:auto!important}
+  #queryPage .qv66-mini{display:block!important;background:#f7f8fa!important;border-radius:10px!important;padding:7px 4px!important;text-align:center!important;min-width:0!important}
+  #queryPage .qv66-mini span{display:block!important;text-align:center!important;font-size:8.4px!important;line-height:1!important;white-space:nowrap!important;font-weight:400!important;color:#8d94a7!important}
+  #queryPage .qv66-mini b{display:block!important;text-align:center!important;font-size:14.8px!important;line-height:1!important;font-weight:900!important;letter-spacing:-.15px!important;margin:4px 0 0!important;color:#1d1d1f!important}
+  #queryPage .qv66-demo-btn{position:absolute!important;right:8px!important;top:50%!important;transform:translateY(-50%)!important;flex:none!important;background:#fafbfc!important;border:1px solid #e2e5ee!important;border-radius:999px!important;padding:6px 7px!important;color:#727a8f!important;font-size:9.2px!important;font-weight:800!important;white-space:nowrap!important;min-width:62px!important}
+}
+@media(min-width:768px){
+  #queryPage .qv66-overview{display:block!important;position:relative!important;background:#fff!important;border:1px solid #e7e9f0!important;border-radius:14px!important;padding:9px 86px 9px 9px!important;margin-top:3px!important;box-shadow:none!important}
+  #queryPage .qv66-mini-grid{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:6px!important;flex:none!important;width:auto!important}
+  #queryPage .qv66-mini{display:block!important;background:#f7f8fa!important;border-radius:10px!important;padding:7px 5px!important;text-align:center!important;min-width:0!important}
+  #queryPage .qv66-mini span{display:block!important;text-align:center!important;font-size:8.8px!important;line-height:1!important;white-space:nowrap!important;font-weight:400!important;color:#8d94a7!important}
+  #queryPage .qv66-mini b{display:block!important;text-align:center!important;font-size:15.5px!important;line-height:1!important;font-weight:900!important;letter-spacing:-.15px!important;margin:4px 0 0!important;color:#1d1d1f!important}
+  #queryPage .qv66-demo-btn{position:absolute!important;right:9px!important;top:50%!important;transform:translateY(-50%)!important;flex:none!important;background:#fafbfc!important;border:1px solid #e2e5ee!important;border-radius:999px!important;padding:6px 9px!important;color:#727a8f!important;font-size:9.7px!important;font-weight:800!important;white-space:nowrap!important;min-width:68px!important}
+}
+</style>
 </head>
 <body>
 <section class="v111-login" id="v111Login" aria-label="登录">
