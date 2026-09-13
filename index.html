@@ -248,6 +248,16 @@ body.lg-lite .lg-orb{filter:blur(28px);opacity:.28}body.lg-lite .qv62-card:hover
   #queryPage .qv62-qty span{font-size:8.7px!important;line-height:1!important}
 }
 </style>
+<style id="card-spacing-unify">
+/* 卡片尺寸+间距对齐 kucunos：仅 #queryPage 结果卡（≤767px），不碰汇总条/头部 */
+@media (max-width:767px){
+  #queryPage .qv58-resultlist{margin:2px -8px 0!important;gap:0!important}
+  #queryPage .qv58-resultlist .qv62-card{padding:13px 15px!important;border-radius:19px!important;margin:10px 0 0!important}
+  #queryPage .qv58-resultlist .qv62-row{margin:6px 0 0!important;gap:8px!important}
+  #queryPage .qv58-resultlist .qv62-meta2{margin:6px 0 0!important;gap:6px!important}
+  #queryPage .qv58-resultlist .qv62-qty{flex:none}
+}
+</style>
 </head>
 <body>
 <section class="v111-login" id="v111Login" aria-label="登录">
