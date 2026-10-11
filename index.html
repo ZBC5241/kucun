@@ -1294,7 +1294,7 @@ function traceColor(type){
 async function runSerialTrace(sn){
   if(traceActiveSn===sn) return;
   traceActiveSn=sn;
-  resultArea.innerHTML='<div style="padding:28px 16px;text-align:center;color:#666;font-size:13px;line-height:1.8;">正在实时查询用友…</div>';
+  resultArea.innerHTML='<div style="padding:28px 16px;text-align:center;color:#666;font-size:13px;line-height:1.8;">正在查询串码全生命周期…</div>';
   const base='https://lijiacun-sn.serveousercontent.com/api/sn-trace?sn='+encodeURIComponent(sn)+'&range=90';
   let waited=0;
   const pollMs=1500;
@@ -1303,7 +1303,7 @@ async function runSerialTrace(sn){
       let j;
       try{ const resp=await fetch(base,{mode:'cors'}); j=await resp.json(); }
       catch(e){ resultArea.innerHTML='<div style="padding:24px 16px;text-align:center;color:#dc2626;font-size:13px;line-height:1.7;">网络错误：'+escHTML(String(e))+'<br><small style="color:#aaa">检查 Mac 是否开机、经理号是否登录用友</small></div>'; return; }
-      if(j&&j.pending){ waited+=pollMs/1000; resultArea.innerHTML='<div style="padding:24px 16px;text-align:center;color:#666;font-size:13px;">已等待 '+Math.round(waited)+' 秒，正在实时查询用友（近 90 天流转，约需 30–40 秒）…</div>'; await _traceSleep(pollMs); continue; }
+      if(j&&j.pending){ waited+=pollMs/1000; resultArea.innerHTML='<div style="padding:24px 16px;text-align:center;color:#666;font-size:13px;">已等待 '+Math.round(waited)+' 秒，正在查询串码流转…</div>'; await _traceSleep(pollMs); continue; }
       if(!j||!j.ok){ resultArea.innerHTML='<div style="padding:24px 16px;text-align:center;color:#dc2626;font-size:13px;">查询失败：'+escHTML((j&&(j.msg||j.err))||'未知错误')+'</div>'; return; }
       if(!j.count){ resultArea.innerHTML='<div style="padding:28px 16px;text-align:center;color:#888;font-size:13px;line-height:1.7;">未查到该序列号的流转记录<br><small style="color:#aaa">请核对串码</small></div>'; return; }
       renderTraceTimeline(j,sn); return;
@@ -1314,23 +1314,35 @@ async function runSerialTrace(sn){
 }
 function renderTraceTimeline(j,sn){
   const rows=j.rows||[];
+  const srcMap={'xinziyou':'新自有','yonyou':'用友'};
   let html='<div style="padding:14px 16px;max-width:780px;margin:0 auto;">';
-  html+='<div style="font-size:13px;color:#555;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #eee;">序列号 <b style="color:#7c3aed">'+escHTML(sn)+'</b> · '+rows.length+' 条记录';
-  if(j.cached) html+=' <span style="color:#16a34a;font-size:12px;margin-left:6px;">缓存秒回</span>';
-  html+=' · 近 '+j.range+' 天 · 用时 '+((j.ms||0)/1000).toFixed(1)+' 秒</div>';
+  html+='<div style="font-size:13px;color:#555;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">';
+  html+='<span>序列号 <b style="color:#7c3aed">'+escHTML(sn)+'</b> · 共 '+rows.length+' 条</span>';
+  if(j.cached) html+='<span style="color:#16a34a;font-size:12px;">缓存秒回</span>';
+  html+='</div>';
   html+='<div style="position:relative;padding-left:20px;"><div style="position:absolute;left:6px;top:4px;bottom:4px;width:2px;background:#e5e7eb;"></div>';
   for(const r of rows){
     const c=traceColor(r.type||'');
+    const returnTag=r.isReturn?'<span style="background:#fee2e2;color:#dc2626;font-size:10px;padding:1px 6px;border-radius:4px;margin-left:6px;font-weight:600;">退货</span>':'';
+    const sourceTag='<span style="background:#f3f4f6;color:#888;font-size:10px;padding:1px 6px;border-radius:4px;margin-left:6px;">'+(srcMap[r.source]||r.source||'用友')+'</span>';
     html+='<div style="position:relative;margin-bottom:14px;">'
       +'<span style="position:absolute;left:-17px;top:4px;width:12px;height:12px;border-radius:50%;background:'+c+';border:2px solid #fff;box-shadow:0 0 0 1px '+c+';"></span>'
       +'<div style="background:#fff;border:1px solid #eee;border-left:3px solid '+c+';border-radius:10px;padding:10px 12px;">'
-      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><span style="background:'+c+';color:#fff;font-size:11px;padding:2px 8px;border-radius:6px;font-weight:600;">'+escHTML(r.type||'其他')+'</span><span style="font-size:12px;color:#888;">'+escHTML(r.date||'')+'</span></div>'
-      +'<div style="font-size:14px;font-weight:600;color:#222;margin-bottom:3px;">'+escHTML(r.name||'')+'</div>'
-      +'<div style="font-size:12px;color:#777;line-height:1.5;">单号 '+escHTML(r.doc||'')+'<br>仓库 '+escHTML(r.wh||'')+' · SKU '+escHTML(r.sku||'')+(r.csn?'<br>串码 '+escHTML(r.csn):'')+'</div>'
+      +'<div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px;">'
+      +'<span style="background:'+c+';color:#fff;font-size:12px;padding:3px 10px;border-radius:6px;font-weight:600;">'+escHTML(r.type||'其他')+'</span>'
+      +returnTag+sourceTag
+      +'<span style="font-size:12px;color:#888;margin-left:auto;">'+escHTML(r.datetime||r.date||'')+'</span></div>'
+      +'<div style="font-size:14px;font-weight:600;color:#222;margin-bottom:6px;">'+escHTML(r.name||'')+'</div>'
+      +'<div style="font-size:12px;color:#777;line-height:1.7;">'
+      +'<div><span style="color:#aaa;">单号</span> '+escHTML(r.doc||'')+'</div>'
+      +'<div><span style="color:#aaa;">仓库</span> '+escHTML(r.wh||'')+'</div>'
+      +'<div><span style="color:#aaa;">SKU</span> '+escHTML(r.sku||'')+'</div>'
+      +'<div><span style="color:#aaa;">串号</span> '+escHTML(r.csn||'')+'</div>'
+      +'</div>'
       +'</div></div>';
   }
   html+='</div>';
-  html+='<div style="font-size:12px;color:#999;margin-top:12px;text-align:center;">仅展示近 '+j.range+' 天内的流转记录；更早记录不在当前范围内</div>';
+  html+='<div style="font-size:12px;color:#999;margin-top:12px;text-align:center;">数据来源：'+(srcMap[j.source]||j.source||'用友')+' · 近 '+j.range+' 天</div>';
   html+='</div>';
   resultArea.innerHTML=html;
 }
