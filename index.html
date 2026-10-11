@@ -1295,7 +1295,7 @@ async function runSerialTrace(sn){
   if(traceActiveSn===sn) return;
   traceActiveSn=sn;
   resultArea.innerHTML='<div style="padding:28px 16px;text-align:center;color:#666;font-size:13px;line-height:1.8;">正在实时查询用友…</div>';
-  const base='https://lijiacun-sn.serveousercontent.com/api/sn-trace?sn='+encodeURIComponent(sn)+'&range=60';
+  const base='https://lijiacun-sn.serveousercontent.com/api/sn-trace?sn='+encodeURIComponent(sn)+'&range=90';
   let waited=0;
   const pollMs=1500;
   try{
@@ -1303,7 +1303,7 @@ async function runSerialTrace(sn){
       let j;
       try{ const resp=await fetch(base,{mode:'cors'}); j=await resp.json(); }
       catch(e){ resultArea.innerHTML='<div style="padding:24px 16px;text-align:center;color:#dc2626;font-size:13px;line-height:1.7;">网络错误：'+escHTML(String(e))+'<br><small style="color:#aaa">检查 Mac 是否开机、经理号是否登录用友</small></div>'; return; }
-      if(j&&j.pending){ waited+=pollMs/1000; resultArea.innerHTML='<div style="padding:24px 16px;text-align:center;color:#666;font-size:13px;">已等待 '+Math.round(waited)+' 秒，正在查询用友…</div>'; await _traceSleep(pollMs); continue; }
+      if(j&&j.pending){ waited+=pollMs/1000; resultArea.innerHTML='<div style="padding:24px 16px;text-align:center;color:#666;font-size:13px;">已等待 '+Math.round(waited)+' 秒，正在实时查询用友（近 90 天流转，约需 30–40 秒）…</div>'; await _traceSleep(pollMs); continue; }
       if(!j||!j.ok){ resultArea.innerHTML='<div style="padding:24px 16px;text-align:center;color:#dc2626;font-size:13px;">查询失败：'+escHTML((j&&(j.msg||j.err))||'未知错误')+'</div>'; return; }
       if(!j.count){ resultArea.innerHTML='<div style="padding:28px 16px;text-align:center;color:#888;font-size:13px;line-height:1.7;">未查到该序列号的流转记录<br><small style="color:#aaa">请核对串码</small></div>'; return; }
       renderTraceTimeline(j,sn); return;
