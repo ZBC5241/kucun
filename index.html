@@ -1342,7 +1342,7 @@ function renderTraceTimeline(j,sn){
       +'</div></div>';
   }
   html+='</div>';
-  html+='<div style="font-size:12px;color:#999;margin-top:12px;text-align:center;">数据来源：'+(srcMap[j.source]||j.source||'用友')+' · 近 '+j.range+' 天</div>';
+  html+='<div style="font-size:12px;color:#999;margin-top:12px;text-align:center;">数据来源：'+(srcMap[j.source]||j.source||'用友')+(j.source==='xinziyou'?' · 全周期（不限时间）':' · 近 '+j.range+' 天')+'</div>';
   html+='</div>';
   resultArea.innerHTML=html;
 }
