@@ -185,6 +185,8 @@ body.lg-controls-receded #v54Nav button span{max-width:0;opacity:0;transform:tra
 @media(prefers-reduced-transparency:reduce){.lg-ambient{display:none}.lg-optical::before{display:none}}
 @media(pointer:coarse){.lg-interactive:hover{filter:none}}
 body.lg-lite .lg-orb{filter:blur(28px);opacity:.28}body.lg-lite .qv62-card:hover{transform:none}body.lg-lite .lg-optical::before{opacity:calc(.38 + var(--lg-energy) * .24)}
+/* 价格角标：行放不下时角标整体掉到下一行，不挤门店名 */
+.qv62-row,#queryPage .qv62-row{flex-wrap:wrap!important;row-gap:4px!important}
 </style>
 <style id="qv-mobile-compact-cards">
 /* 手机查询结果恢复高信息密度，同时保留完整 SKU 身份信息。 */
@@ -1149,10 +1151,12 @@ function priceBadgeHTML(it){
   const retail=pm.retail?String(pm.retail):'';
   const promo=pm.promo?String(pm.promo):'';
   if(!price&&!retail) return '';
-  return '<div style="margin-left:auto;display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;justify-content:flex-end;text-align:right;">'
-    +(price?'<span style="font-size:21px;font-weight:800;color:#16a34a;line-height:1;">'+escHTML(price)+'<span style="font-size:12px;font-weight:600;color:#999;margin-left:2px;">元</span></span>':'')
-    +(retail?'<span style="font-size:13px;color:#999;">原价 '+escHTML(retail)+' 元</span>':'')
-    +(promo?'<span style="background:#fee2e2;color:#dc2626;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;">促销 '+escHTML(promo)+'</span>':'')
+  return '<div style="margin-left:auto;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:3px;text-align:right;">'
+    +'<div style="display:flex;align-items:baseline;gap:5px;white-space:nowrap;">'
+    +(price?'<span style="font-size:18px;font-weight:800;color:#16a34a;line-height:1;">'+escHTML(price)+'<span style="font-size:11px;font-weight:600;color:#999;margin-left:1px;">元</span></span>':'')
+    +(retail?'<span style="font-size:12px;color:#999;">原价'+escHTML(retail)+'</span>':'')
+    +'</div>'
+    +(promo?'<div style="white-space:nowrap;"><span style="background:#fee2e2;color:#dc2626;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;">促销'+escHTML(promo)+'</span></div>':'')
     +'</div>';
 }
 function cardHTML(it){
@@ -1161,9 +1165,8 @@ function cardHTML(it){
     +'<div class="qv62-row"><div class="qv62-main"><div class="qv62-code">'+escHTML(it.code)+'</div><div class="qv62-meta2">'
     +'<span class="qv62-store"><i></i>'+escHTML(it._baseStore||it.wh)+'</span><span class="qv62-cat">'+escHTML(it.cat||'其他')+'</span>'
     +(isNonSaleStock(it)?'<span class="qv62-demo">演示机</span>':'')+'</div></div>'
-    +'<div class="qv62-qty"><b>'+rowStockValue(it)+'</b><span>'+ (isNonSaleStock(it)?'样机':'库存') +'</span></div></div>'
     + priceBadgeHTML(it)
-    +'</div>';
+    +'<div class="qv62-qty"><b>'+rowStockValue(it)+'</b><span>'+ (isNonSaleStock(it)?'样机':'库存') +'</span></div></div>';
 }
 function summaryHTML(stores,stocks,demosCount,maxStoreQty){
   return '<section class="qv66-overview"><div class="qv66-mini-grid"><div class="qv66-mini"><span>有货门店</span><b>'+stores+'</b></div><div class="qv66-mini"><span>可售库存</span><b>'+stocks+'</b></div><div class="qv66-mini"><span>最高单店</span><b>'+maxStoreQty+'</b></div></div>'
@@ -1171,9 +1174,7 @@ function summaryHTML(stores,stocks,demosCount,maxStoreQty){
 }
 function queryStoreContextHTML(res){if(!res||!res.storeIntent||!res.storeIntent.store)return '';const label=res.storeIntent.store.replace(/^华为/,'').replace('智能生活馆西安','').replace('授权体验店','').replace('至臻店','').replace('合作店','');return '<div class="v105-query-store-context"><span>限定门店</span><b>'+escHTML(label)+'</b><em>只显示该店当前库存</em></div>';}
 function storeOnlyPromptHTML(res){const label=res&&res.storeIntent?res.storeIntent.alias:'';return '<div class="qv58-empty"><div class="qv58-empty-title">已识别门店 '+escHTML(label)+'</div><div class="qv58-empty-sub">请在门店词前补充商品，例如“x7 16 '+escHTML(label)+'”或“WATCH5 紫 '+escHTML(label)+'”。</div></div>';}
-function cardHTMLStoreScoped(it){const zero=saleStockValue(it)<=0;return '<div class="qv62-card'+(zero?' v105-store-zero':'')+'"><div class="qv62-head"><div class="qv62-name" title="'+escHTML(it.name)+'"><span>'+escHTML(it.name)+'</span></div></div><div class="qv62-row"><div class="qv62-main"><div class="qv62-code">'+escHTML(it.code)+'</div><div class="qv62-meta2"><span class="qv62-store"><i></i>'+escHTML(it._baseStore||it.wh)+'</span><span class="qv62-cat">'+escHTML(it.cat||'其他')+'</span>'+(zero?'<span class="v105-zero-badge">当前门店无货</span>':'')+'</div></div><div class="qv62-qty"><b>'+saleStockValue(it)+'</b><span>库存</span></div></div>'
-    + priceBadgeHTML(it)
-    +'</div>';}
+function cardHTMLStoreScoped(it){const zero=saleStockValue(it)<=0;return '<div class="qv62-card'+(zero?' v105-store-zero':'')+'"><div class="qv62-head"><div class="qv62-name" title="'+escHTML(it.name)+'"><span>'+escHTML(it.name)+'</span></div></div><div class="qv62-row"><div class="qv62-main"><div class="qv62-code">'+escHTML(it.code)+'</div><div class="qv62-meta2"><span class="qv62-store"><i></i>'+escHTML(it._baseStore||it.wh)+'</span><span class="qv62-cat">'+escHTML(it.cat||'其他')+'</span>'+(zero?'<span class="v105-zero-badge">当前门店无货</span>':'')+'</div></div>'+priceBadgeHTML(it)+'<div class="qv62-qty"><b>'+saleStockValue(it)+'</b><span>库存</span></div></div>';}
 function fitSkuNames(){
   requestAnimationFrame(()=>{
     resultArea.querySelectorAll('.qv62-name').forEach(el=>{
