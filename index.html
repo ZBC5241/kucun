@@ -434,8 +434,14 @@ html.ljc-authenticated #queryPage .qv62-card:after{background:linear-gradient(11
   --surface:#fff!important;--glass:#fff!important;--edge:rgba(0,0,0,.06)!important;
   --shadow:0 1px 2px rgba(0,0,0,.04),0 6px 16px rgba(0,0,0,.05)!important;
 }
-html{background:#F6F7F9!important}
-body{background:#F6F7F9!important}
+html,body,
+html.ljc-authenticated,html:not(.ljc-authenticated),
+html.ljc-authenticated body,html:not(.ljc-authenticated) body{
+  background:#F6F7F9!important;
+  background-image:none!important;
+  background-color:#F6F7F9!important;
+  background-attachment:scroll!important;
+}
 body::before,body::after{display:none!important}
 *,*::before,*::after{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 .lg-orb,.lg-ambient{display:none!important}
