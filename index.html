@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#f2f2f7">
-<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0D0F14">
   <!-- 库存查询独立正式版：独立库存查询、规格解析、门店筛选、演示机隔离与统一数据口径。 -->
 <title>库存查询</title>
   <meta property="og:title" content="库存查询">
@@ -114,7 +113,7 @@
 
 
 <style id="ios26-unified-design">
-:root{color-scheme:light;--ink:#1d1d1f;--sub:#686874;--accent:#6558d9;--surface:rgba(255,255,255,.76);--edge:rgba(255,255,255,.9);--glass:linear-gradient(145deg,rgba(255,255,255,.72),rgba(255,255,255,.28));--shadow:0 12px 36px rgba(35,39,66,.1),0 2px 5px rgba(35,39,66,.04),inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.4);--safe:env(safe-area-inset-bottom,0px)}
+:root{--ink:#1d1d1f;--sub:#686874;--accent:#6558d9;--surface:rgba(255,255,255,.76);--edge:rgba(255,255,255,.9);--glass:linear-gradient(145deg,rgba(255,255,255,.72),rgba(255,255,255,.28));--shadow:0 12px 36px rgba(35,39,66,.1),0 2px 5px rgba(35,39,66,.04),inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.4);--safe:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}html{min-height:100%;background:#f2f3f7}body{color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue','PingFang SC','Microsoft YaHei',sans-serif;-webkit-font-smoothing:antialiased;background:radial-gradient(ellipse at 0% 0%,#e0def2 0,transparent 48%),radial-gradient(ellipse at 100% 55%,#dcecf3 0,transparent 48%),#f2f3f7;background-attachment:fixed;min-height:100svh;font-size:16px;line-height:1.5}button,input{font:inherit}button{cursor:pointer;touch-action:manipulation}button:disabled{cursor:default;opacity:.45}button:focus-visible,input:focus-visible{outline:3px solid #9187e8;outline-offset:4px}button{transition:transform .28s cubic-bezier(.2,.8,.2,1),background .2s,box-shadow .2s}button:active:not(:disabled){transform:scale(.95)}svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #queryPage{width:min(100%,1064px);margin-inline:auto;padding:28px 24px calc(174px + var(--safe));display:flex;flex-direction:column;gap:24px}html:not(.ljc-authenticated) #queryPage,html:not(.ljc-authenticated) #v54Nav{display:none}
 .qv7c-header{order:0}.qv7c-panel{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 22px;border-radius:30px;background:var(--glass);border:1px solid var(--edge);box-shadow:var(--shadow);backdrop-filter:blur(28px) saturate(160%);-webkit-backdrop-filter:blur(28px) saturate(160%)}.qv7c-left{display:flex;gap:13px;align-items:center;min-width:0}.qv7c-chip,.v111-login-mark{display:grid;place-items:center;background:linear-gradient(145deg,#8c80ef,#6253cf);color:white;box-shadow:inset 0 1px 1px #ffffff90,0 6px 16px #6558d922;border:1px solid #ffffff55;width:48px;height:48px;border-radius:16px;font-size:13px;font-weight:600;flex:none}.qv7c-title{font-size:22px;font-weight:650;letter-spacing:-.7px}.qv7c-sub{font-size:12px;color:var(--sub);margin-top:2px}.qv116-actions{display:flex;flex-direction:column;align-items:flex-end;gap:7px;flex:none}.updated{font-size:11px;color:var(--sub);display:flex;gap:5px}.updated b{font-weight:500}.v111-logout{border:1px solid #ffffffa0;background:rgba(255,255,255,.58);color:var(--ink);padding:0 18px;min-height:44px;border-radius:24px;font-size:13px;box-shadow:inset 0 1px 0 white,0 2px 6px #24284908}
@@ -127,7 +126,6 @@
 @media(min-width:768px){#qv63SearchFloat{position:sticky;top:16px;bottom:auto!important;width:min(100%,760px);margin:0 auto}.qv64-empty-start{margin-top:30px}.qv58-resultlist>.qv62-card:last-child:nth-child(odd){grid-column:1/-1;width:calc(50% - 6px);justify-self:center}}
 @media(max-width:767px){#queryPage{padding:18px 16px calc(180px + var(--safe));gap:20px}.qv7c-panel{padding:15px;border-radius:26px}.qv7c-title{font-size:19px}.qv7c-chip{width:42px;height:44px}.qv7c-left{gap:10px}.qv58-resultlist,.demo-sec{grid-template-columns:minmax(0,1fr)}.qv66-overview{gap:10px;padding:16px 13px}.qv66-mini-grid{gap:8px}.qv66-mini b{font-size:25px}.qv66-demo-btn{padding:8px 10px;font-size:12px}.updated{font-size:10px;gap:3px}.qv116-update-label{display:none}.qv64-empty-title{font-size:27px}.qv64-empty-start{margin-top:clamp(12px,5vh,40px)}.search-box input{font-size:16px}}
 @media(max-width:360px){.qv7c-panel{padding:12px;gap:8px}.qv7c-title{font-size:17px}.qv7c-sub{font-size:11px}.qv7c-chip{display:none}.v111-logout{padding:0 12px}.qv66-overview{flex-wrap:wrap}.qv66-mini-grid{flex-basis:100%}.qv64-empty-sub{font-size:15px}}
-@media(prefers-color-scheme:dark){:root{color-scheme:dark;--ink:#f5f5f7;--sub:#aaaab6;--accent:#b3a7ff;--surface:rgba(38,39,48,.94);--edge:rgba(255,255,255,.18);--glass:linear-gradient(145deg,rgba(66,66,81,.72),rgba(31,32,43,.66));--shadow:0 12px 36px #0004,inset 0 1px 0 #ffffff25,inset 0 -1px 0 #ffffff08}html{background:#14151c}body{background:radial-gradient(ellipse at 0 0,#29253e,transparent 50%),radial-gradient(ellipse at 100% 60%,#1d303a,transparent 50%),#14151c}.v111-logout{background:#ffffff0b;border-color:#ffffff20}.qv66-overview,.qv62-card{border-color:#ffffff0b}.qv64-empty-start:before{background-color:#ffffff10}.qv62-qty b{color:#62dba0}.v70-conflict{background:#483820;color:#e9c98a}.v111-field input{border-color:#ffffff15}.qv62-demo,.sec-h,.v105-zero-badge{color:#e9bb78}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 @media(prefers-reduced-transparency:reduce){.qv7c-panel,.search-box,#v54Nav,.v111-login-card{background:var(--surface);backdrop-filter:none;-webkit-backdrop-filter:none}}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.qv7c-panel,.search-box,#v54Nav,.v111-login-card{background:var(--surface)}}
@@ -184,7 +182,6 @@ body.lg-controls-receded #v54Nav button span{max-width:0;opacity:0;transform:tra
 .lg-focus-pulse{animation:lg-focus-pulse .7s var(--lg-spring)}
 @keyframes lg-focus-pulse{0%{box-shadow:var(--shadow)}42%{box-shadow:0 18px 48px rgba(85,68,190,.2),0 0 0 5px rgba(112,93,222,.09),inset 0 1px 0 #fff}100%{box-shadow:var(--shadow)}}
 @media(max-width:767px){.qv62-card:hover{transform:none}body.lg-controls-receded #qv63SearchFloat{transform:translateY(5px)}#qv63SearchFloat{transition:bottom .24s ease,transform .48s var(--lg-spring)!important}}
-@media(prefers-color-scheme:dark){html{background:radial-gradient(ellipse at var(--lg-ambient-x) var(--lg-ambient-y),rgba(97,75,177,.24),transparent 38%),radial-gradient(ellipse at 96% 68%,rgba(41,116,139,.19),transparent 43%),#14151c!important}.lg-orb{opacity:.34}.qv62-card{background:linear-gradient(145deg,rgba(45,46,57,.94),rgba(34,35,45,.9))!important}.lg-optical::before{mix-blend-mode:screen;opacity:calc(.32 + var(--lg-energy) * .28)}}
 @media(prefers-reduced-motion:reduce){.lg-orb{display:none}.qv64-empty-start::before{animation:none}.lg-ripple{display:none}body.lg-controls-receded #v54Nav{width:156px}body.lg-controls-receded #v54Nav button span{max-width:72px;opacity:1;transform:none}}
 @media(prefers-reduced-transparency:reduce){.lg-ambient{display:none}.lg-optical::before{display:none}}
 @media(pointer:coarse){.lg-interactive:hover{filter:none}}
@@ -219,17 +216,6 @@ body.lg-lite .lg-orb{filter:blur(28px);opacity:.28}body.lg-lite .qv62-card:hover
   #queryPage .qv62-qty{min-width:38px!important;padding-left:2px!important}
   #queryPage .qv62-qty b{font-size:21px!important;line-height:1!important;font-weight:750!important}
   #queryPage .qv62-qty span{font-size:8.5px!important;line-height:1.2!important;font-weight:600!important;color:#626879!important;margin-top:2px!important}
-}
-@media(max-width:767px) and (prefers-color-scheme:dark){
-  .qv7c-panel,.search-box,#v54Nav{background:#252630!important;border-color:rgba(255,255,255,.14)!important;box-shadow:0 10px 28px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.09)!important}
-  .qv7c-title,.qv64-empty-title,.search-box input{color:#f5f5f7!important}
-  .qv7c-sub,.updated,.qv64-empty-sub,.search-box input::placeholder{color:#b2b3bf!important}.updated b{color:#b7adff!important}
-  .v111-logout{background:rgba(255,255,255,.07)!important;border-color:rgba(255,255,255,.13)!important;color:#f5f5f7!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)!important}
-  .search-box:focus-within{border-color:rgba(178,167,255,.64)!important;box-shadow:0 13px 32px rgba(0,0,0,.36),0 0 0 3px rgba(178,167,255,.12),inset 0 1px 0 rgba(255,255,255,.1)!important}
-  .search-box .ico,.search-box .clr,#v54Nav button{color:#b7adff!important}.search-box .clr{background:rgba(255,255,255,.08)!important}#v54Nav button{background:rgba(178,167,255,.11)!important}
-  #queryPage .qv62-card{background:#272832!important;border-color:rgba(255,255,255,.09)!important;box-shadow:0 4px 14px rgba(0,0,0,.18)!important}
-  #queryPage .qv62-card::after{background:linear-gradient(110deg,rgba(255,255,255,.055),transparent 34%,transparent 76%,rgba(90,170,210,.025))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.11)!important}
-  #queryPage .qv62-code,#queryPage .qv62-meta2,#queryPage .qv62-store,#queryPage .qv62-cat,#queryPage .qv62-qty span{color:#c5c6d0!important}
 }
 </style>
 <style id="qv-reference-comfort-tuning">
@@ -275,15 +261,6 @@ body.lg-lite .lg-orb{filter:blur(28px);opacity:.28}body.lg-lite .qv62-card:hover
   .qv116-actions{max-width:130px!important}.updated{font-size:9.5px!important}
   #queryPage .qv62-card{padding-left:13px!important;padding-right:13px!important}
 }
-@media(max-width:767px) and (prefers-color-scheme:dark){
-  .qv7c-title,#queryPage .qv62-name,#queryPage .qv62-name span{color:#f5f5f7!important}
-  .qv7c-sub,.updated{color:#b4b6c2!important}.updated b{color:#bbb1ff!important}
-  .qv66-mini{background:rgba(255,255,255,.045)!important}.qv66-mini span{color:#b5b7c2!important}.qv66-mini b{color:#f5f5f7!important}
-  #queryPage .qv62-card{background:#272832!important}
-  #queryPage .qv62-code{color:#b8bbc7!important}#queryPage .qv62-store{color:#d0d2db!important}
-  #queryPage .qv62-cat,#queryPage .qv62-demo{color:#c9cbd5!important;border-color:rgba(255,255,255,.10)!important;background:rgba(255,255,255,.055)!important}
-  #queryPage .qv62-qty span{color:#b8bbc5!important}
-}
 </style>
 <style id="qv-mobile-liquid-depth">
 /* 移动端静态流体玻璃：用合成友好的渐变与内高光增强通透度，不恢复昂贵的实时背景模糊。 */
@@ -317,21 +294,6 @@ body.lg-lite .lg-orb{filter:blur(28px);opacity:.28}body.lg-lite .qv62-card:hover
   #queryPage .qv62-card:after{z-index:0!important;background:linear-gradient(112deg,rgba(255,255,255,.68),rgba(255,255,255,.14) 25%,transparent 43%,rgba(145,122,236,.045) 59%,rgba(64,190,222,.20))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.98),inset 0 -1px 0 rgba(105,88,196,.12)!important;opacity:1!important}
   .search-box:focus-within{background-color:rgba(250,250,255,.79)!important;border-color:rgba(127,112,230,.58)!important;box-shadow:0 16px 38px rgba(55,57,97,.15),0 0 0 3px rgba(111,92,221,.09),inset 1px 1px 0 #fff,inset -1px -1px 0 rgba(103,87,194,.10)!important}
   #v54Nav button{background:linear-gradient(145deg,rgba(126,108,231,.16),rgba(101,88,217,.08))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.74),inset 0 -1px 0 rgba(94,76,191,.08)!important}
-}
-@media(max-width:767px) and (prefers-color-scheme:dark){
-  body{background:radial-gradient(ellipse at -8% 2%,rgba(100,77,177,.32) 0%,transparent 46%),radial-gradient(ellipse at 108% 62%,rgba(38,126,151,.26) 0%,transparent 49%),linear-gradient(145deg,#171720 0%,#14161d 50%,#122029 100%)!important;background-attachment:scroll!important}
-  .qv7c-panel,.search-box,#v54Nav{
-    background-color:rgba(34,36,47,.91)!important;
-    background-image:radial-gradient(125% 105% at 4% 0%,rgba(104,96,145,.35),transparent 54%),linear-gradient(140deg,rgba(55,57,72,.88),rgba(33,35,46,.94) 58%,rgba(27,47,56,.88))!important;
-    border-color:rgba(255,255,255,.18)!important;
-    box-shadow:0 15px 36px rgba(0,0,0,.34),0 3px 8px rgba(0,0,0,.18),inset 1px 1px 0 rgba(255,255,255,.17),inset -1px -1px 0 rgba(101,161,185,.08)!important
-  }
-  .qv7c-panel:after{background:linear-gradient(112deg,rgba(255,255,255,.10),transparent 29%,transparent 68%,rgba(89,184,217,.07));box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -1px 0 rgba(134,111,235,.07)}
-  .qv66-overview{background-color:rgba(37,39,50,.91)!important;background-image:linear-gradient(142deg,rgba(61,62,77,.83),rgba(36,38,49,.93) 57%,rgba(26,46,55,.87))!important;border-color:rgba(255,255,255,.14)!important;box-shadow:0 13px 31px rgba(0,0,0,.27),inset 1px 1px 0 rgba(255,255,255,.13),inset -1px -1px 0 rgba(87,147,171,.07)!important}
-  .qv66-mini{background:linear-gradient(148deg,rgba(255,255,255,.075),rgba(80,92,116,.035))!important;border-color:rgba(255,255,255,.08)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.09)!important}
-  #queryPage .qv62-card{background-color:rgba(36,38,49,.94)!important;background-image:radial-gradient(120% 92% at 3% 0%,rgba(89,84,122,.25),transparent 55%),linear-gradient(138deg,rgba(54,56,70,.90),rgba(35,37,48,.96) 58%,rgba(26,45,53,.90))!important;border-color:rgba(255,255,255,.15)!important;box-shadow:0 11px 27px rgba(0,0,0,.27),0 2px 5px rgba(0,0,0,.16),inset 1px 1px 0 rgba(255,255,255,.14),inset -1px -1px 0 rgba(83,151,177,.07)!important}
-  #queryPage .qv62-card:after{background:linear-gradient(112deg,rgba(255,255,255,.09),transparent 27%,transparent 69%,rgba(79,174,207,.065))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.13),inset 0 -1px 0 rgba(136,111,235,.055)!important}
-  .search-box:focus-within{background-color:rgba(39,40,53,.95)!important;border-color:rgba(183,171,255,.58)!important;box-shadow:0 16px 38px rgba(0,0,0,.38),0 0 0 3px rgba(177,162,255,.10),inset 1px 1px 0 rgba(255,255,255,.15)!important}
 }
 </style>
 <style id="qv-ios-native-neutral-pass">
@@ -377,17 +339,6 @@ body{background:linear-gradient(180deg,#f8f8fa 0%,#f2f2f7 46%,#eceff3 100%)!impo
   #queryPage .qv62-card{background-color:rgba(255,255,255,.78)!important;background-image:linear-gradient(145deg,rgba(255,255,255,.86),rgba(248,249,251,.72))!important;border-color:rgba(255,255,255,.92)!important;box-shadow:0 4px 14px rgba(15,23,42,.055),inset 0 1px 0 #fff,inset 0 -1px 0 rgba(84,99,119,.055)!important}
   #queryPage .qv62-card:after{background:linear-gradient(112deg,rgba(255,255,255,.26),transparent 33%,transparent 80%,rgba(105,135,157,.035))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.78)!important}
 }
-@media(prefers-color-scheme:dark){
-  :root{--accent:#0a84ff;--ink:#f5f5f7;--sub:#aeaeb2}
-  html{background:#000!important}body{background:linear-gradient(180deg,#111214,#090a0c 48%,#000 100%)!important}
-  .qv7c-panel,.search-box,#v54Nav{background-color:rgba(43,43,46,.82)!important;background-image:linear-gradient(145deg,rgba(70,70,74,.72),rgba(38,38,41,.82) 58%,rgba(28,31,34,.86))!important;border-color:rgba(255,255,255,.15)!important;box-shadow:0 12px 32px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(0,0,0,.28)!important}
-  .updated b,.search-box .ico,#v54Nav button{color:#64aaff!important}
-  .qv66-overview{background:rgba(35,35,38,.90)!important;border-color:rgba(255,255,255,.09)!important;box-shadow:0 6px 19px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.09)!important}
-  .qv66-mini{background:rgba(255,255,255,.045)!important;border-color:rgba(255,255,255,.055)!important}
-  .qv66-demo-btn{color:#64aaff!important;border-color:rgba(10,132,255,.23)!important;background:rgba(10,132,255,.08)!important}
-  .qv62-card,#queryPage .qv62-card{background-color:rgba(36,36,39,.94)!important;background-image:linear-gradient(145deg,rgba(55,55,59,.88),rgba(31,31,34,.94))!important;border-color:rgba(255,255,255,.10)!important;box-shadow:0 5px 16px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.10)!important}
-  .qv62-card:after,#queryPage .qv62-card:after{background:linear-gradient(112deg,rgba(255,255,255,.07),transparent 34%,transparent 82%,rgba(255,255,255,.025))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)!important}
-}
 </style>
 <style id="qv-optical-glass-v3">
 /* Web 端光学玻璃：有限背景采样、法线感高光、边缘色散与静态降级。 */
@@ -401,10 +352,6 @@ body{background:linear-gradient(180deg,#f8f8fa 0%,#f2f2f7 46%,#eceff3 100%)!impo
   body:not(.lg-lite) .qv7c-panel{backdrop-filter:blur(14px) saturate(145%) contrast(101%)!important;-webkit-backdrop-filter:blur(14px) saturate(145%) contrast(101%)!important;background-color:rgba(247,247,249,.62)!important}
   .search-box:before,#v54Nav:before{background:radial-gradient(110px 68px at var(--og-x) var(--og-y),rgba(255,255,255,.72),rgba(255,255,255,.14) 42%,transparent 74%),linear-gradient(96deg,rgba(255,59,48,.05),transparent 18%,transparent 81%,rgba(10,132,255,.09))}
   body.lg-lite .qv7c-panel,body.lg-lite .search-box,body.lg-lite #v54Nav{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
-}
-@media(prefers-color-scheme:dark){
-  .qv7c-panel:before,.search-box:before,#v54Nav:before{background:radial-gradient(145px 88px at var(--og-x) var(--og-y),rgba(255,255,255,.24),rgba(255,255,255,.055) 42%,transparent 73%),linear-gradient(96deg,rgba(255,69,58,.065),transparent 18%,transparent 81%,rgba(10,132,255,.105));opacity:.88}
-  .qv7c-panel,.search-box,#v54Nav{box-shadow:0 14px 36px rgba(0,0,0,.38),inset 0 1.5px 0 rgba(255,255,255,.20),inset 1px 0 0 rgba(255,69,58,.075),inset -1px 0 0 rgba(10,132,255,.12),inset 0 -1px 0 rgba(0,0,0,.32)!important}
 }
 @media(prefers-reduced-motion:reduce){.qv7c-panel:before,.search-box:before,#v54Nav:before{transition:none!important}}
 @media(prefers-reduced-transparency:reduce){.qv7c-panel,.search-box,#v54Nav{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}.qv7c-panel:before,.search-box:before,#v54Nav:before{display:none!important}}
@@ -426,9 +373,6 @@ body{background:linear-gradient(180deg,#f8f8fa 0%,#f2f2f7 46%,#eceff3 100%)!impo
   #queryPage .qv62-qty{min-width:44px!important;padding:0 0 1px 4px!important;align-self:flex-end!important}
   #queryPage .qv62-qty b{font-size:27px!important;line-height:1!important}
   #queryPage .qv62-qty span{margin-top:5px!important;font-size:10px!important;line-height:1.2!important}
-}
-@media(min-width:768px) and (prefers-color-scheme:dark){
-  .qv66-mini{border:0!important;background:rgba(255,255,255,.055)!important;background-image:none!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.075),0 1px 3px rgba(0,0,0,.10)!important}
 }
 </style>
 <style id="qv-mobile-metadata-baseline-v32">
@@ -458,14 +402,6 @@ html:not(.ljc-authenticated) .lg-ambient{display:none!important}
 .v111-field input:focus{background:#fff!important;border-color:rgba(0,122,255,.48)!important;box-shadow:0 0 0 3px rgba(0,122,255,.10),inset 0 1px 0 #fff!important}
 .v111-submit{background:linear-gradient(180deg,#168cff,#007aff)!important;border-color:rgba(255,255,255,.48)!important;box-shadow:0 8px 20px rgba(0,122,255,.22),inset 0 1px 0 rgba(255,255,255,.38),inset 0 -1px 0 rgba(0,72,158,.22)!important;color:#fff!important}
   .v111-submit:active{background:linear-gradient(180deg,#0a7fea,#006ee6)!important}
-  @media(prefers-color-scheme:dark){
-  html:not(.ljc-authenticated),html:not(.ljc-authenticated) body{background:#000!important}
-  html:not(.ljc-authenticated) body{background-image:linear-gradient(180deg,#151517 0%,#09090b 56%,#000 100%)!important}
-  .v111-login-card{background-color:rgba(36,36,39,.90)!important;background-image:linear-gradient(145deg,rgba(58,58,62,.86),rgba(31,31,34,.92) 58%,rgba(21,24,27,.94))!important;border-color:rgba(255,255,255,.13)!important;box-shadow:0 20px 52px rgba(0,0,0,.44),inset 0 1px 0 rgba(255,255,255,.14),inset 0 -1px 0 rgba(0,0,0,.36)!important}
-  .v111-login h1{color:#f5f5f7!important}.v111-field span{color:#aeaeb2!important}
-  .v111-field input{color:#f5f5f7!important;background:rgba(255,255,255,.065)!important;border-color:rgba(255,255,255,.10)!important;box-shadow:inset 0 1px 1px rgba(0,0,0,.20),inset 0 1px 0 rgba(255,255,255,.055)!important}
-  .v111-field input:focus{background:rgba(255,255,255,.09)!important;border-color:rgba(10,132,255,.62)!important;box-shadow:0 0 0 3px rgba(10,132,255,.15),inset 0 1px 0 rgba(255,255,255,.07)!important}
-}
 </style>
 <style id="qv-ios27-clear-glass-v4">
 /* iOS 27 方向：玻璃本体无色，系统蓝仅作为交互强调色。 */
@@ -489,16 +425,6 @@ html.ljc-authenticated #queryPage .qv62-card:after{background:linear-gradient(11
   .qv7c-panel,.search-box,#v54Nav{background-color:rgba(255,255,255,.66)!important;background-image:linear-gradient(145deg,rgba(255,255,255,.80),rgba(255,255,255,.48) 55%,rgba(242,242,247,.52))!important}
   html.ljc-authenticated #queryPage .qv62-card{background-color:rgba(255,255,255,.76)!important;background-image:linear-gradient(145deg,rgba(255,255,255,.88),rgba(250,250,251,.72) 60%,rgba(242,242,247,.66))!important}
   body.lg-lite .qv7c-panel,body.lg-lite .search-box,body.lg-lite #v54Nav{background-color:rgba(250,250,251,.94)!important}
-}
-@media(prefers-color-scheme:dark){
-  :root{--ios27-bg:#000;--ios27-glass:rgba(44,44,46,.68);--ios27-content:rgba(36,36,38,.84);--ios27-edge:rgba(255,255,255,.14);--ios27-hairline:rgba(255,255,255,.09)}
-  html.ljc-authenticated{background:#000!important}html.ljc-authenticated body{background-color:#000!important;background-image:radial-gradient(ellipse at 50% -14%,rgba(58,58,60,.42),transparent 47%),linear-gradient(180deg,#121214 0%,#08080a 56%,#000 100%)!important}
-  .qv7c-panel,.search-box,#v54Nav{background-color:rgba(44,44,46,.72)!important;background-image:linear-gradient(145deg,rgba(72,72,74,.58),rgba(39,39,41,.72) 58%,rgba(24,24,26,.76))!important;border-color:rgba(255,255,255,.14)!important;box-shadow:0 14px 36px rgba(0,0,0,.38),inset 0 1.5px 0 rgba(255,255,255,.18),inset 1px 0 0 rgba(255,255,255,.08),inset -1px 0 0 rgba(0,0,0,.18),inset 0 -1px 0 rgba(0,0,0,.34)!important}
-  .qv7c-panel:before,.search-box:before,#v54Nav:before{background:radial-gradient(150px 88px at var(--og-x) var(--og-y),rgba(255,255,255,.22),rgba(255,255,255,.045) 42%,transparent 73%),linear-gradient(96deg,rgba(255,255,255,.075),transparent 19%,transparent 81%,rgba(0,0,0,.10))!important}
-  .qv66-overview{background-color:rgba(34,34,36,.88)!important;background-image:linear-gradient(145deg,rgba(51,51,54,.76),rgba(28,28,30,.88))!important;border-color:rgba(255,255,255,.10)!important;box-shadow:0 7px 22px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.09)!important}
-  .qv66-mini{background:rgba(255,255,255,.048)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.065)!important}
-  html.ljc-authenticated #queryPage .qv62-card{background-color:rgba(36,36,38,.90)!important;background-image:linear-gradient(145deg,rgba(52,52,55,.82),rgba(29,29,31,.92))!important;border-color:rgba(255,255,255,.10)!important;box-shadow:0 5px 17px rgba(0,0,0,.27),inset 0 1px 0 rgba(255,255,255,.10)!important}
-  html.ljc-authenticated #queryPage .qv62-card:after{background:linear-gradient(112deg,rgba(255,255,255,.065),transparent 36%,transparent 82%,rgba(0,0,0,.05))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.075)!important}
 }
 </style></head>
 <body>
@@ -1615,27 +1541,6 @@ if(readSession())openWorkbench();else showLogin();
 .qv62-price .np{color:#bdbdbd;font-size:11px}
 /* ===== kucun-dark-align-v2（2026-10-26）：深色对齐「星联会员-膜套包汇总」效果 =====
    深底#0D0F14 + 面板#161922 + 亮字 + 提亮紫；置于末尾级联必胜，浅色零影响 */
-@media(prefers-color-scheme:dark){
-  :root{
-    --lg-canvas:#0D0F14;
-    --lg-ink:#E9EBF2;--lg-sub:#A9B1C2;--lg-muted:#7A8296;
-    --lg-accent:#A78BFA;--lg-green:#4ADE80;--lg-red:#F87171;--lg-amber:#FBBF24;
-    --lg-solid:rgba(24,27,34,.94);--lg-soft:rgba(38,41,52,.72);
-    --lg-edge:rgba(255,255,255,.12);--lg-line:rgba(255,255,255,.08);
-    --lg-glass:linear-gradient(145deg,rgba(34,37,47,.78),rgba(20,22,29,.86));
-    --lg-card:linear-gradient(145deg,#161922,#11131A);
-    --lg-shadow:0 14px 40px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.06);
-    --lg-card-shadow:0 10px 28px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.05);
-    --ios27-bg:#0D0F14;--ios27-glass:rgba(30,33,42,.72);--ios27-content:rgba(24,27,34,.86);
-    --ios27-edge:rgba(255,255,255,.12);--ios27-hairline:rgba(255,255,255,.08);
-    --accent:#A78BFA;--ink:#E9EBF2;
-  }
-  html{background:#0D0F14!important}
-  body{color:#E9EBF2!important;
-    background:radial-gradient(ellipse at 18% 8%,rgba(122,110,220,.10),transparent 40%),radial-gradient(ellipse at 96% 68%,rgba(41,116,139,.06),transparent 43%),#0D0F14!important}
-  .v105-query-store-context,.v111-logout{background:#161922!important}
-
-}
 </style>
 <script src="promoData.js"></script>
 <script>(function(){
@@ -1668,3 +1573,4 @@ if(readSession())openWorkbench();else showLogin();
 })();</script>
 </body>
 </html>
+
