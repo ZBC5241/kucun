@@ -426,7 +426,29 @@ html.ljc-authenticated #queryPage .qv62-card:after{background:linear-gradient(11
   html.ljc-authenticated #queryPage .qv62-card{background-color:rgba(255,255,255,.76)!important;background-image:linear-gradient(145deg,rgba(255,255,255,.88),rgba(250,250,251,.72) 60%,rgba(242,242,247,.66))!important}
   body.lg-lite .qv7c-panel,body.lg-lite .search-box,body.lg-lite #v54Nav{background-color:rgba(250,250,251,.94)!important}
 }
-</style></head>
+</style>
+
+<style id="flat-clean-override">
+/* 膜套包式彻底干净：斩光层+毛玻璃，实白卡+中性灰阴影 */
+:root{
+  --surface:#fff!important;--glass:#fff!important;--edge:rgba(0,0,0,.06)!important;
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 6px 16px rgba(0,0,0,.05)!important;
+}
+html{background:#F6F7F9!important}
+body{background:#F6F7F9!important}
+body::before,body::after{display:none!important}
+*,*::before,*::after{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.lg-orb,.lg-ambient{display:none!important}
+.qv7c-panel:before,.search-box:before,#v54Nav:before{display:none!important}
+.qv7c-panel,.search-box,#v54Nav,.v111-login-card,.v111-logout{
+  background:#fff!important;background-image:none!important;
+  border:1px solid rgba(0,0,0,.06)!important;
+  box-shadow:0 1px 2px rgba(0,0,0,.04),0 6px 16px rgba(0,0,0,.05)!important;
+}
+.qv7c-chip,.v111-login-mark{box-shadow:inset 0 1px 1px rgba(255,255,255,.6),0 4px 12px rgba(101,88,217,.18)!important}
+</style>
+
+</head>
 <body>
 <section class="v111-login" id="v111Login" aria-label="登录">
   <form class="v111-login-card" id="v111LoginForm" autocomplete="on">
