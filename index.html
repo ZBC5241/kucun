@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#f2f2f7">
-<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0D0F14">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1A1B20">
   <!-- 库存查询独立正式版：独立库存查询、规格解析、门店筛选、演示机隔离与统一数据口径。 -->
 <title>库存查询</title>
   <meta property="og:title" content="库存查询">
@@ -228,7 +228,7 @@ body.lg-lite .lg-orb{filter:blur(28px);opacity:.28}body.lg-lite .qv62-card:hover
   .search-box:focus-within{border-color:rgba(178,167,255,.64)!important;box-shadow:0 13px 32px rgba(0,0,0,.36),0 0 0 3px rgba(178,167,255,.12),inset 0 1px 0 rgba(255,255,255,.1)!important}
   .search-box .ico,.search-box .clr,#v54Nav button{color:#b7adff!important}.search-box .clr{background:rgba(255,255,255,.08)!important}#v54Nav button{background:rgba(178,167,255,.11)!important}
   #queryPage .qv62-card{background:#272832!important;border-color:rgba(255,255,255,.09)!important;box-shadow:0 4px 14px rgba(0,0,0,.18)!important}
-  #queryPage .qv62-card::after{background:linear-gradient(110deg,rgba(255,255,255,.055),transparent 34%,transparent 76%,rgba(90,170,210,.025))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.11)!important}
+  #queryPage .qv62-card::after{background:linear-gradient(110deg,rgba(255,255,255,.09),transparent 34%,transparent 76%,rgba(90,170,210,.025))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.11)!important}
   #queryPage .qv62-code,#queryPage .qv62-meta2,#queryPage .qv62-store,#queryPage .qv62-cat,#queryPage .qv62-qty span{color:#c5c6d0!important}
 }
 </style>
@@ -278,10 +278,10 @@ body.lg-lite .lg-orb{filter:blur(28px);opacity:.28}body.lg-lite .qv62-card:hover
 @media(max-width:767px) and (prefers-color-scheme:dark){
   .qv7c-title,#queryPage .qv62-name,#queryPage .qv62-name span{color:#f5f5f7!important}
   .qv7c-sub,.updated{color:#b4b6c2!important}.updated b{color:#bbb1ff!important}
-  .qv66-mini{background:rgba(255,255,255,.045)!important}.qv66-mini span{color:#b5b7c2!important}.qv66-mini b{color:#f5f5f7!important}
+  .qv66-mini{background:rgba(255,255,255,.08)!important}.qv66-mini span{color:#b5b7c2!important}.qv66-mini b{color:#f5f5f7!important}
   #queryPage .qv62-card{background:#272832!important}
   #queryPage .qv62-code{color:#b8bbc7!important}#queryPage .qv62-store{color:#d0d2db!important}
-  #queryPage .qv62-cat,#queryPage .qv62-demo{color:#c9cbd5!important;border-color:rgba(255,255,255,.10)!important;background:rgba(255,255,255,.055)!important}
+  #queryPage .qv62-cat,#queryPage .qv62-demo{color:#c9cbd5!important;border-color:rgba(255,255,255,.10)!important;background:rgba(255,255,255,.09)!important}
   #queryPage .qv62-qty span{color:#b8bbc5!important}
 }
 </style>
@@ -383,7 +383,7 @@ body{background:linear-gradient(180deg,#f8f8fa 0%,#f2f2f7 46%,#eceff3 100%)!impo
   .qv7c-panel,.search-box,#v54Nav{background-color:rgba(43,43,46,.82)!important;background-image:linear-gradient(145deg,rgba(70,70,74,.72),rgba(38,38,41,.82) 58%,rgba(28,31,34,.86))!important;border-color:rgba(255,255,255,.15)!important;box-shadow:0 12px 32px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(0,0,0,.28)!important}
   .updated b,.search-box .ico,#v54Nav button{color:#64aaff!important}
   .qv66-overview{background:rgba(35,35,38,.90)!important;border-color:rgba(255,255,255,.09)!important;box-shadow:0 6px 19px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.09)!important}
-  .qv66-mini{background:rgba(255,255,255,.045)!important;border-color:rgba(255,255,255,.055)!important}
+  .qv66-mini{background:rgba(255,255,255,.08)!important;border-color:rgba(255,255,255,.09)!important}
   .qv66-demo-btn{color:#64aaff!important;border-color:rgba(10,132,255,.23)!important;background:rgba(10,132,255,.08)!important}
   .qv62-card,#queryPage .qv62-card{background-color:rgba(36,36,39,.94)!important;background-image:linear-gradient(145deg,rgba(55,55,59,.88),rgba(31,31,34,.94))!important;border-color:rgba(255,255,255,.10)!important;box-shadow:0 5px 16px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.10)!important}
   .qv62-card:after,#queryPage .qv62-card:after{background:linear-gradient(112deg,rgba(255,255,255,.07),transparent 34%,transparent 82%,rgba(255,255,255,.025))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)!important}
@@ -403,7 +403,7 @@ body{background:linear-gradient(180deg,#f8f8fa 0%,#f2f2f7 46%,#eceff3 100%)!impo
   body.lg-lite .qv7c-panel,body.lg-lite .search-box,body.lg-lite #v54Nav{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 }
 @media(prefers-color-scheme:dark){
-  .qv7c-panel:before,.search-box:before,#v54Nav:before{background:radial-gradient(145px 88px at var(--og-x) var(--og-y),rgba(255,255,255,.24),rgba(255,255,255,.055) 42%,transparent 73%),linear-gradient(96deg,rgba(255,69,58,.065),transparent 18%,transparent 81%,rgba(10,132,255,.105));opacity:.88}
+  .qv7c-panel:before,.search-box:before,#v54Nav:before{background:radial-gradient(145px 88px at var(--og-x) var(--og-y),rgba(255,255,255,.24),rgba(255,255,255,.09) 42%,transparent 73%),linear-gradient(96deg,rgba(255,69,58,.065),transparent 18%,transparent 81%,rgba(10,132,255,.105));opacity:.88}
   .qv7c-panel,.search-box,#v54Nav{box-shadow:0 14px 36px rgba(0,0,0,.38),inset 0 1.5px 0 rgba(255,255,255,.20),inset 1px 0 0 rgba(255,69,58,.075),inset -1px 0 0 rgba(10,132,255,.12),inset 0 -1px 0 rgba(0,0,0,.32)!important}
 }
 @media(prefers-reduced-motion:reduce){.qv7c-panel:before,.search-box:before,#v54Nav:before{transition:none!important}}
@@ -428,7 +428,7 @@ body{background:linear-gradient(180deg,#f8f8fa 0%,#f2f2f7 46%,#eceff3 100%)!impo
   #queryPage .qv62-qty span{margin-top:5px!important;font-size:10px!important;line-height:1.2!important}
 }
 @media(min-width:768px) and (prefers-color-scheme:dark){
-  .qv66-mini{border:0!important;background:rgba(255,255,255,.055)!important;background-image:none!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.075),0 1px 3px rgba(0,0,0,.10)!important}
+  .qv66-mini{border:0!important;background:rgba(255,255,255,.09)!important;background-image:none!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.075),0 1px 3px rgba(0,0,0,.10)!important}
 }
 </style>
 <style id="qv-mobile-metadata-baseline-v32">
@@ -463,7 +463,7 @@ html:not(.ljc-authenticated) .lg-ambient{display:none!important}
   html:not(.ljc-authenticated) body{background-image:linear-gradient(180deg,#151517 0%,#09090b 56%,#000 100%)!important}
   .v111-login-card{background-color:rgba(36,36,39,.90)!important;background-image:linear-gradient(145deg,rgba(58,58,62,.86),rgba(31,31,34,.92) 58%,rgba(21,24,27,.94))!important;border-color:rgba(255,255,255,.13)!important;box-shadow:0 20px 52px rgba(0,0,0,.44),inset 0 1px 0 rgba(255,255,255,.14),inset 0 -1px 0 rgba(0,0,0,.36)!important}
   .v111-login h1{color:#f5f5f7!important}.v111-field span{color:#aeaeb2!important}
-  .v111-field input{color:#f5f5f7!important;background:rgba(255,255,255,.065)!important;border-color:rgba(255,255,255,.10)!important;box-shadow:inset 0 1px 1px rgba(0,0,0,.20),inset 0 1px 0 rgba(255,255,255,.055)!important}
+  .v111-field input{color:#f5f5f7!important;background:rgba(255,255,255,.065)!important;border-color:rgba(255,255,255,.10)!important;box-shadow:inset 0 1px 1px rgba(0,0,0,.20),inset 0 1px 0 rgba(255,255,255,.09)!important}
   .v111-field input:focus{background:rgba(255,255,255,.09)!important;border-color:rgba(10,132,255,.62)!important;box-shadow:0 0 0 3px rgba(10,132,255,.15),inset 0 1px 0 rgba(255,255,255,.07)!important}
 }
 </style>
@@ -494,7 +494,7 @@ html.ljc-authenticated #queryPage .qv62-card:after{background:linear-gradient(11
   :root{--ios27-bg:#000;--ios27-glass:rgba(44,44,46,.68);--ios27-content:rgba(36,36,38,.84);--ios27-edge:rgba(255,255,255,.14);--ios27-hairline:rgba(255,255,255,.09)}
   html.ljc-authenticated{background:#000!important}html.ljc-authenticated body{background-color:#000!important;background-image:radial-gradient(ellipse at 50% -14%,rgba(58,58,60,.42),transparent 47%),linear-gradient(180deg,#121214 0%,#08080a 56%,#000 100%)!important}
   .qv7c-panel,.search-box,#v54Nav{background-color:rgba(44,44,46,.72)!important;background-image:linear-gradient(145deg,rgba(72,72,74,.58),rgba(39,39,41,.72) 58%,rgba(24,24,26,.76))!important;border-color:rgba(255,255,255,.14)!important;box-shadow:0 14px 36px rgba(0,0,0,.38),inset 0 1.5px 0 rgba(255,255,255,.18),inset 1px 0 0 rgba(255,255,255,.08),inset -1px 0 0 rgba(0,0,0,.18),inset 0 -1px 0 rgba(0,0,0,.34)!important}
-  .qv7c-panel:before,.search-box:before,#v54Nav:before{background:radial-gradient(150px 88px at var(--og-x) var(--og-y),rgba(255,255,255,.22),rgba(255,255,255,.045) 42%,transparent 73%),linear-gradient(96deg,rgba(255,255,255,.075),transparent 19%,transparent 81%,rgba(0,0,0,.10))!important}
+  .qv7c-panel:before,.search-box:before,#v54Nav:before{background:radial-gradient(150px 88px at var(--og-x) var(--og-y),rgba(255,255,255,.22),rgba(255,255,255,.08) 42%,transparent 73%),linear-gradient(96deg,rgba(255,255,255,.075),transparent 19%,transparent 81%,rgba(0,0,0,.10))!important}
   .qv66-overview{background-color:rgba(34,34,36,.88)!important;background-image:linear-gradient(145deg,rgba(51,51,54,.76),rgba(28,28,30,.88))!important;border-color:rgba(255,255,255,.10)!important;box-shadow:0 7px 22px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.09)!important}
   .qv66-mini{background:rgba(255,255,255,.048)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.065)!important}
   html.ljc-authenticated #queryPage .qv62-card{background-color:rgba(36,36,38,.90)!important;background-image:linear-gradient(145deg,rgba(52,52,55,.82),rgba(29,29,31,.92))!important;border-color:rgba(255,255,255,.10)!important;box-shadow:0 5px 17px rgba(0,0,0,.27),inset 0 1px 0 rgba(255,255,255,.10)!important}
@@ -1614,26 +1614,26 @@ if(readSession())openWorkbench();else showLogin();
 .qv62-price .final{color:#e53935;font-weight:700;font-size:15px;line-height:1.15}
 .qv62-price .np{color:#bdbdbd;font-size:11px}
 /* ===== kucun-dark-align-v2（2026-10-26）：深色对齐「星联会员-膜套包汇总」效果 =====
-   深底#0D0F14 + 面板#161922 + 亮字 + 提亮紫；置于末尾级联必胜，浅色零影响 */
+   深底#1A1B20 + 面板#24262E + 亮字 + 提亮紫；置于末尾级联必胜，浅色零影响 */
 @media(prefers-color-scheme:dark){
   :root{
-    --lg-canvas:#0D0F14;
+    --lg-canvas:#1A1B20;
     --lg-ink:#E9EBF2;--lg-sub:#A9B1C2;--lg-muted:#7A8296;
     --lg-accent:#A78BFA;--lg-green:#4ADE80;--lg-red:#F87171;--lg-amber:#FBBF24;
-    --lg-solid:rgba(24,27,34,.94);--lg-soft:rgba(38,41,52,.72);
+    --lg-solid:rgba(44,47,58,.95);--lg-soft:rgba(58,62,75,.72);
     --lg-edge:rgba(255,255,255,.12);--lg-line:rgba(255,255,255,.08);
-    --lg-glass:linear-gradient(145deg,rgba(34,37,47,.78),rgba(20,22,29,.86));
-    --lg-card:linear-gradient(145deg,#161922,#11131A);
+    --lg-glass:linear-gradient(145deg,rgba(54,58,70,.78),rgba(30,33,41,.86));
+    --lg-card:linear-gradient(145deg,#24262E,#1C1E26);
     --lg-shadow:0 14px 40px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.06);
     --lg-card-shadow:0 10px 28px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.05);
-    --ios27-bg:#0D0F14;--ios27-glass:rgba(30,33,42,.72);--ios27-content:rgba(24,27,34,.86);
+    --ios27-bg:#1A1B20;--ios27-glass:rgba(52,56,68,.72);--ios27-content:rgba(40,43,54,.86);
     --ios27-edge:rgba(255,255,255,.12);--ios27-hairline:rgba(255,255,255,.08);
     --accent:#A78BFA;--ink:#E9EBF2;
   }
-  html{background:#0D0F14!important}
+  html{background:#1A1B20!important}
   body{color:#E9EBF2!important;
-    background:radial-gradient(ellipse at 18% 8%,rgba(122,110,220,.10),transparent 40%),radial-gradient(ellipse at 96% 68%,rgba(41,116,139,.06),transparent 43%),#0D0F14!important}
-  .v105-query-store-context,.v111-logout{background:#161922!important}
+    background:radial-gradient(ellipse at 18% 8%,rgba(122,110,220,.10),transparent 40%),radial-gradient(ellipse at 96% 68%,rgba(41,116,139,.06),transparent 43%),#1A1B20!important}
+  .v105-query-store-context,.v111-logout{background:#24262E!important}
 
 }
 </style>
