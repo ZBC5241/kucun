@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#f2f2f7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0D0F14">
   <!-- 库存查询独立正式版：独立库存查询、规格解析、门店筛选、演示机隔离与统一数据口径。 -->
 <title>库存查询</title>
   <meta property="og:title" content="库存查询">
@@ -1610,7 +1612,31 @@ if(readSession())openWorkbench();else showLogin();
 .qv62-price .orig.cut-orig{text-decoration:line-through}
 .qv62-price .cut{color:#e53935;font-size:12px}
 .qv62-price .final{color:#e53935;font-weight:700;font-size:15px;line-height:1.15}
-.qv62-price .np{color:#bdbdbd;font-size:11px}</style>
+.qv62-price .np{color:#bdbdbd;font-size:11px}
+/* ===== kucun-dark-align-v2（2026-10-26）：深色对齐「星联会员-膜套包汇总」效果 =====
+   深底#0D0F14 + 面板#161922 + 亮字 + 提亮紫；置于末尾级联必胜，浅色零影响 */
+@media(prefers-color-scheme:dark){
+  :root{
+    --lg-canvas:#0D0F14;
+    --lg-ink:#E9EBF2;--lg-sub:#A9B1C2;--lg-muted:#7A8296;
+    --lg-accent:#A78BFA;--lg-green:#4ADE80;--lg-red:#F87171;--lg-amber:#FBBF24;
+    --lg-solid:rgba(24,27,34,.94);--lg-soft:rgba(38,41,52,.72);
+    --lg-edge:rgba(255,255,255,.12);--lg-line:rgba(255,255,255,.08);
+    --lg-glass:linear-gradient(145deg,rgba(34,37,47,.78),rgba(20,22,29,.86));
+    --lg-card:linear-gradient(145deg,#161922,#11131A);
+    --lg-shadow:0 14px 40px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.06);
+    --lg-card-shadow:0 10px 28px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.05);
+    --ios27-bg:#0D0F14;--ios27-glass:rgba(30,33,42,.72);--ios27-content:rgba(24,27,34,.86);
+    --ios27-edge:rgba(255,255,255,.12);--ios27-hairline:rgba(255,255,255,.08);
+    --accent:#A78BFA;--ink:#E9EBF2;
+  }
+  html{background:#0D0F14!important}
+  body{color:#E9EBF2!important;
+    background:radial-gradient(ellipse at 18% 8%,rgba(122,110,220,.10),transparent 40%),radial-gradient(ellipse at 96% 68%,rgba(41,116,139,.06),transparent 43%),#0D0F14!important}
+  .v105-query-store-context,.v111-logout{background:#161922!important}
+
+}
+</style>
 <script src="promoData.js"></script>
 <script>(function(){
   if(!window.PRICE_DATA){console.warn('promoData.js 未加载');return;}
