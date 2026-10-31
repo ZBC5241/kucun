@@ -21,13 +21,39 @@ if ! mkdir "$LOCK" 2>/dev/null; then
 fi
 trap 'rmdir "$LOCK" 2>/dev/null' EXIT
 
+# 失败告警：桌面通知（最佳努力，不阻塞主流程）
+alert() {
+  local msg="$1"
+  echo "ALERT $(date '+%F %T'): $msg" >> "$LOG"
+  osascript -e "display notification \"$msg\" with title \"价格刷新失败\"" 2>/dev/null || true
+}
+
 echo "==================================================" >> "$LOG"
 echo "价格刷新开始 $(date '+%F %T')" >> "$LOG"
 
-cd "$PIPE" || { echo "$(date) cd 失败" >> "$LOG"; exit 1; }
+# 保活 9223：复用 Claw 已加固的 ensure_chrome（端口通即复用、不通才拉起，绝不抢端口）
+# 实测握手 + 端口通≠可用 兜底，防止 502 僵尸实例
+"$PY" - <<'PYEOF' >> "$LOG" 2>&1
+import sys, os
+sys.path.insert(0, "/Users/mac/WorkBuddy/Claw")
+import stock_pull as sp
+try:
+    ok = sp.ensure_chrome()
+    if not ok:
+        print("ensure_chrome 失败"); sys.exit(1)
+    bws = sp.get_bws()          # 端口通≠可用，实测一次握手兜底
+    bws.cmd("Browser.getVersion")
+    print("9223 保活 OK")
+except Exception as e:
+    print("9223 健康检查失败:", e); sys.exit(1)
+sys.exit(0)
+PYEOF
+if [ $? -ne 0 ]; then alert "9223 通道不可用，价格未刷新（详见 refresh_promo.log）"; exit 1; fi
+
+cd "$PIPE" || { echo "$(date) cd 失败" >> "$LOG"; alert "价格管线目录缺失"; exit 1; }
 "$PY" run_all.py >> "$LOG" 2>&1
 RC=$?
-if [ "$RC" -ne 0 ]; then echo "$(date) run_all 失败 RC=$RC，保留旧 promoData.js" >> "$LOG"; exit $RC; fi
+if [ "$RC" -ne 0 ]; then alert "run_all 失败 RC=$RC，保留旧 promoData.js"; exit $RC; fi
 
 # 精简：剥 tiers/real/null → kucun/promoData.js
 "$PY" - "$KUCUN" <<'PYEOF' >> "$LOG" 2>&1
