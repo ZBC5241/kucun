@@ -501,13 +501,6 @@ body::before,body::after{display:none!important}
   </div>
 </div>
 
-<div class="scan-overlay" id="scanOverlay" hidden>
-  <div class="scan-head"><span>拍照识别串码</span><button class="scan-close" id="scanClose" aria-label="关闭">✕</button></div>
-  <div id="scanReader" class="scan-reader"></div>
-  <div class="scan-tip">点击下方「拍照识别」调起手机原生相机，对准产品串码标签拍一张即可自动识别（支持一维 / 二维条码）</div>
-  <button class="scan-shoot" id="scanShoot" type="button">拍照识别</button>
-</div>
-
 <nav id="v54Nav" class="qv120-query-only-nav" aria-label="库存查询导航">
   <span class="qv120-nav-spacer" aria-hidden="true"></span>
   <span class="qv120-nav-spacer" aria-hidden="true"></span>
@@ -1329,91 +1322,6 @@ clrBtn.onclick=()=>{searchInput.value='';showDemo=false;traceActiveSn=null;searc
 window.__queryAudit={searchInventory,searchInventoryCore,parseQueryStoreIntent,appendSearchQualifierPreserveStore,tokenize,skuCatalog,scopedRows,rowsByCode,fitSkuNames,QUERY_STORES,stockValue:saleStockValue,versionTagsOfText,functionalVariantOfText,normalizeSearchChars,normalizeCapacityInQuery,dataDiagnostics:window.LJC_DATA_DIAGNOSTICS,buildDeviceQueryContext};
 render();
 
-// ===== 扫码查串码：调起手机原生相机拍照 → 系统检测引擎解码（最大兼容性，绕开网页内视频流兼容问题）=====
-let _scanInput=null;
-const scanOverlay=document.getElementById('scanOverlay');
-const scanReader=document.getElementById('scanReader');
-const scanBtn=document.getElementById('scanBtn');
-const scanClose=document.getElementById('scanClose');
-const scanShoot=document.getElementById('scanShoot');
-function closeScan(){
-  scanOverlay.hidden=true; scanReader.innerHTML='';
-}
-function openScan(){
-  scanOverlay.hidden=false;
-  scanReader.innerHTML='<div class="scan-status">点击下方「拍照识别」调起相机</div>';
-  // 在用户手势内直接调起相机（部分浏览器需此链路才允许）
-  ensureScanInput().value='';
-  ensureScanInput().click();
-}
-function ensureScanInput(){
-  if(_scanInput) return _scanInput;
-  _scanInput=document.createElement('input');
-  _scanInput.type='file';
-  _scanInput.accept='image/*';
-  _scanInput.setAttribute('capture','environment');
-  _scanInput.style.display='none';
-  _scanInput.addEventListener('change', onScanFilePicked);
-  document.body.appendChild(_scanInput);
-  return _scanInput;
-}
-function onScanFilePicked(e){
-  const file=e.target.files&&e.target.files[0];
-  if(!file){ return; }
-  decodeImageFile(file);
-}
-async function decodeImageFile(file){
-  scanReader.innerHTML='<div class="scan-status">识别中…</div>';
-  let text=null;
-  try{
-    if(window.BarcodeDetector){ text=await decodeNative(file); }
-    else if(typeof Html5Qrcode!=='undefined'){ text=await decodeHtml5(file); }
-  }catch(err){}
-  if(text){
-    closeScan(); triggerQueryFromScan(text);
-  }else{
-    scanReader.innerHTML='<div class="scan-status err">未识别到条码<br>请重拍或手动输入</div><button class="scan-shoot" id="scanRetry" type="button">重拍</button>';
-    const rb=document.getElementById('scanRetry');
-    if(rb) rb.addEventListener('click', function(){ ensureScanInput().value=''; ensureScanInput().click(); });
-  }
-}
-function fileToImage(file){
-  return new Promise(function(res,rej){
-    const url=URL.createObjectURL(file);
-    const img=new Image();
-    img.onload=function(){ res(img); };
-    img.onerror=function(){ try{URL.revokeObjectURL(url);}catch(e){} rej(new Error('img')); };
-    img.src=url;
-  });
-}
-async function decodeNative(file){
-  const img=await fileToImage(file);
-  let formats=[];
-  try{ formats=await BarcodeDetector.getSupportedFormats(); }catch(e){}
-  const det=new BarcodeDetector({formats:formats.length?formats:undefined});
-  const codes=await det.detect(img);
-  if(codes&&codes.length) return (codes[0].rawValue||'').trim();
-  return null;
-}
-function decodeHtml5(file){
-  return new Promise(function(resolve){
-    try{
-      const s=new Html5Qrcode('scanReader', {formatsToSupport:[0,1,2,3,4,5,6,8,9,10,11,14,15], useBarCodeDetectorIfSupported:true});
-      s.scanFile(file, false).then(function(t){ resolve(t); }).catch(function(){ resolve(null); });
-    }catch(e){ resolve(null); }
-  });
-}
-function triggerQueryFromScan(text){
-  const q=String(text||'').trim();
-  if(!q) return;
-  searchInput.value=q; sbox.classList.add('has');
-  if(isSerialLike(q)){ clearTimeout(serialDebounceTimer); traceActiveSn=null; runSerialTrace(q); }
-  else { lastQuery=''; scheduleRender(true); }
-}
-scanBtn.addEventListener('click', openScan);
-scanClose.addEventListener('click', closeScan);
-if(scanShoot) scanShoot.addEventListener('click', function(){ ensureScanInput().value=''; ensureScanInput().click(); });
-window.__scanDebug={openScan:openScan,closeScan:closeScan,triggerQueryFromScan:triggerQueryFromScan,decodeImageFile:decodeImageFile};
 
 </script>
 
