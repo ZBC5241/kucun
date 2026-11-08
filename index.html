@@ -1367,30 +1367,14 @@ async function openScan(){
   if(typeof Html5Qrcode!=='undefined'){ startHtml5Scan(); return; }
   alert('当前环境不支持扫码，请手动输入串码');
 }
-// 授权后标签可读，优先挑长焦/3x 后摄
-async function pickTeleCamera(){
-  try{
-    const devs=await navigator.mediaDevices.enumerateDevices();
-    const cams=devs.filter(d=>d.kind==='videoinput'&&d.deviceId);
-    const tele=cams.find(d=>/tele|长焦|periscope|3x|5x|2x|zoom|远|中焦/i.test(d.label||''));
-    if(tele) return tele.deviceId;
-    const rear=cams.filter(d=>/back|rear|后|主|环境|wide|ultra|macro/i.test(d.label||''));
-    if(rear.length>=2){
-      const nw=rear.find(d=>!/ultra|wide|广角|macro|微距/i.test(d.label||''));
-      if(nw) return nw.deviceId;
-    }
-  }catch(e){}
-  return null;
-}
+// 默认使用后置主摄（1 倍焦段），不强行挑长焦
+
 // 视频轨：连续对焦 + 3x 变焦 + 闪光灯（按设备能力探测）
 function applyTrackOptimizations(track){
   if(!track||!track.getCapabilities) return;
   const cap=track.getCapabilities();
   if(cap.focusMode&&Array.isArray(cap.focusMode)&&cap.focusMode.indexOf('continuous')>=0){
     track.applyConstraints({focusMode:'continuous'}).catch(function(){});
-  }
-  if(cap.zoom&&cap.zoom.max&&cap.zoom.max>1){
-    const z=Math.min(3,cap.zoom.max); if(z>1) track.applyConstraints({advanced:[{zoom:z}]}).catch(function(){});
   }
   if(scanTorch){
     const canTorch=!!cap.torch;
@@ -1416,16 +1400,6 @@ async function startNativeScan(){
   ];
   for(const c of tryConstraints){ try{ stream=await navigator.mediaDevices.getUserMedia(c); break; }catch(err){ lastErr=err; } }
   if(!stream){ scanOverlay.hidden=true; alert('无法启动摄像头：'+((lastErr&&lastErr.message)||lastErr)); return; }
-  // 授权后标签可用 → 挑长焦后摄并重开
-  try{
-    const teleId=await pickTeleCamera();
-    const cur=stream.getVideoTracks()[0];
-    if(teleId&&cur&&teleId!==cur.getSettings().deviceId){
-      const old=stream;
-      stream=await navigator.mediaDevices.getUserMedia({video:{deviceId:{exact:teleId},width:{ideal:1920},height:{ideal:1080}},audio:false}).catch(function(){return null;});
-      if(stream){ old.getTracks().forEach(function(t){t.stop();}); } else { stream=old; }
-    }
-  }catch(e){}
   _nativeTrack=stream.getVideoTracks()[0];
   applyTrackOptimizations(_nativeTrack);
   const video=document.createElement('video');
@@ -1458,7 +1432,7 @@ function startHtml5Scan(){
     useBarCodeDetectorIfSupported:true,
     showTorchButtonIfSupported:true,
     showZoomSliderIfSupported:true,
-    defaultZoomValueIfSupported:3
+    defaultZoomValueIfSupported:1
   });
   _scanner.start({facingMode:'environment'}, {fps:15, qrbox:function(vw,vh){const s=Math.min(vw,vh);return {width:Math.floor(s*0.8),height:Math.floor(s*0.5)};},
       videoConstraints:{facingMode:'environment',width:{ideal:1920},height:{ideal:1080}}},
