@@ -1343,21 +1343,63 @@ clrBtn.onclick=()=>{searchInput.value='';showDemo=false;traceActiveSn=null;searc
 window.__queryAudit={searchInventory,searchInventoryCore,parseQueryStoreIntent,appendSearchQualifierPreserveStore,tokenize,skuCatalog,scopedRows,rowsByCode,fitSkuNames,QUERY_STORES,stockValue:saleStockValue,versionTagsOfText,functionalVariantOfText,normalizeSearchChars,normalizeCapacityInQuery,dataDiagnostics:window.LJC_DATA_DIAGNOSTICS,buildDeviceQueryContext};
 render();
 
-// ===== 扫码查串码（独立于库存搜索，不改动原逻辑）=====
-let _scanner=null,_scanning=false;
+// ===== 扫码查串码：原生 BarcodeDetector 优先（系统级检测，最快最准，原生支持一维/二维条码），html5-qrcode 兜底 =====
+let _scanner=null,_scanning=false,_nativeStop=null;
 const scanOverlay=document.getElementById('scanOverlay');
 const scanReader=document.getElementById('scanReader');
 const scanBtn=document.getElementById('scanBtn');
 const scanClose=document.getElementById('scanClose');
 function closeScan(){
+  if(_nativeStop){ try{_nativeStop();}catch(e){} _nativeStop=null; }
   if(_scanner&&_scanning){ try{ _scanner.stop().then(function(){_scanning=false;}).catch(function(){}); }catch(e){} }
   scanOverlay.hidden=true; scanReader.innerHTML='';
 }
-function openScan(){
-  if(typeof Html5Qrcode==='undefined'){ alert('扫码组件未加载，请检查网络后重试'); return; }
-  scanOverlay.hidden=false;
-  if(!_scanner) _scanner=new Html5Qrcode('scanReader');
-  _scanner.start({facingMode:'environment'}, {fps:10, qrbox:{width:240,height:150}},
+async function openScan(){
+  if(window.BarcodeDetector){
+    try{ await startNativeScan(); return; }catch(e){ /* 落到兜底 */ }
+  }
+  if(typeof Html5Qrcode!=='undefined'){ startHtml5Scan(); return; }
+  alert('当前环境不支持扫码，请手动输入串码');
+}
+async function startNativeScan(){
+  scanOverlay.hidden=false; scanReader.innerHTML='';
+  let stream, lastErr=null;
+  const tryConstraints=[
+    {video:{facingMode:'environment',width:{ideal:1920},height:{ideal:1080},focusMode:'continuous'},audio:false},
+    {video:{facingMode:'environment'},audio:false}
+  ];
+  for(const c of tryConstraints){
+    try{ stream=await navigator.mediaDevices.getUserMedia(c); break; }catch(err){ lastErr=err; }
+  }
+  if(!stream){ scanOverlay.hidden=true; alert('无法启动摄像头：'+((lastErr&&lastErr.message)||lastErr)); return; }
+  const video=document.createElement('video');
+  video.srcObject=stream; video.setAttribute('playsinline',''); video.setAttribute('autoplay',''); video.muted=true;
+  scanReader.appendChild(video);
+  await video.play().catch(function(){});
+  let formats=[];
+  try{ formats=await BarcodeDetector.getSupportedFormats(); }catch(e){}
+  const detector=new BarcodeDetector({formats:formats.length?formats:undefined});
+  let scanning=true, busy=false;
+  _nativeStop=function(){ scanning=false; try{ stream.getTracks().forEach(function(t){t.stop();}); }catch(e){} };
+  const tick=async function(){
+    if(!scanning) return;
+    if(!busy && video.readyState>=2){
+      busy=true;
+      try{
+        const codes=await detector.detect(video);
+        if(codes&&codes.length){ const t=(codes[0].rawValue||'').trim(); closeScan(); triggerQueryFromScan(t); return; }
+      }catch(e){}
+      busy=false;
+    }
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+function startHtml5Scan(){
+  scanOverlay.hidden=false; scanReader.innerHTML='';
+  if(!_scanner) _scanner=new Html5Qrcode('scanReader', {formatsToSupport:[0,1,2,3,4,5,6,8,9,10,11,14,15]});
+  _scanner.start({facingMode:'environment'}, {fps:15, qrbox:{width:300,height:200},
+      videoConstraints:{facingMode:'environment',width:{ideal:1920},height:{ideal:1080},focusMode:'continuous'}},
     function(decodedText){ closeScan(); triggerQueryFromScan(decodedText); },
     function(){}
   ).then(function(){_scanning=true;}).catch(function(err){ scanOverlay.hidden=true; alert('无法启动摄像头：'+((err&&err.message)||err)); });
