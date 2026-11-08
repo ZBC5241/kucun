@@ -468,6 +468,11 @@ body::before,body::after{display:none!important}
 .scan-torch{width:38px;height:38px;border:0;background:rgba(255,255,255,.14);color:#fff;border-radius:50%;font-size:17px;line-height:1;cursor:pointer;display:none;align-items:center;justify-content:center}
 .scan-torch:active{background:rgba(255,255,255,.28)}
 .scan-torch.on{background:#ffcc00;color:#1a1a1a}
+.scan-reader{display:flex;flex-direction:column;align-items:center;gap:14px;padding:22px 18px;box-sizing:border-box}
+.scan-status{color:#fff;opacity:.88;font-size:15px;text-align:center;line-height:1.65}
+.scan-status.err{color:#ff7a7a}
+.scan-shoot{margin-top:6px;width:210px;height:52px;border:0;border-radius:26px;background:linear-gradient(135deg,#ff5a5f,#ff2d55);color:#fff;font-size:17px;font-weight:600;cursor:pointer;box-shadow:0 6px 22px rgba(255,45,85,.38)}
+.scan-shoot:active{transform:scale(.97)}
 #scanReader{width:100%;max-width:480px;background:#161618;border:1px solid rgba(255,255,255,.10);border-radius:14px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.4)}
 #scanReader video{width:100%!important;height:auto!important;object-fit:cover;display:block}
 .scan-tip{color:#fff;opacity:.78;font-size:13px;margin-top:18px;text-align:center;padding:0 28px;line-height:1.65}
@@ -521,9 +526,10 @@ body::before,body::after{display:none!important}
 </div>
 
 <div class="scan-overlay" id="scanOverlay" hidden>
-  <div class="scan-head"><span>对准产品条码 / 二维码</span><span class="scan-tools"><button class="scan-torch" id="scanTorch" aria-label="闪光灯" type="button">💡</button><button class="scan-close" id="scanClose" aria-label="关闭">✕</button></span></div>
-  <div id="scanReader"></div>
-  <div class="scan-tip">将摄像头对准产品上的串码标签，识别后自动查询该机全生命周期</div>
+  <div class="scan-head"><span>拍照识别串码</span><button class="scan-close" id="scanClose" aria-label="关闭">✕</button></div>
+  <div id="scanReader" class="scan-reader"></div>
+  <div class="scan-tip">点击下方「拍照识别」调起手机原生相机，对准产品串码标签拍一张即可自动识别（支持一维 / 二维条码）</div>
+  <button class="scan-shoot" id="scanShoot" type="button">拍照识别</button>
 </div>
 
 <nav id="v54Nav" class="qv120-query-only-nav" aria-label="库存查询导航">
@@ -1347,98 +1353,79 @@ clrBtn.onclick=()=>{searchInput.value='';showDemo=false;traceActiveSn=null;searc
 window.__queryAudit={searchInventory,searchInventoryCore,parseQueryStoreIntent,appendSearchQualifierPreserveStore,tokenize,skuCatalog,scopedRows,rowsByCode,fitSkuNames,QUERY_STORES,stockValue:saleStockValue,versionTagsOfText,functionalVariantOfText,normalizeSearchChars,normalizeCapacityInQuery,dataDiagnostics:window.LJC_DATA_DIAGNOSTICS,buildDeviceQueryContext};
 render();
 
-// ===== 扫码查串码：原生 BarcodeDetector 优先（系统级检测，最快最准，支持一维/二维条码），html5-qrcode 兜底 =====
-let _scanner=null,_scanning=false,_nativeStop=null,_nativeTrack=null,_torchOn=false;
+// ===== 扫码查串码：调起手机原生相机拍照 → 系统检测引擎解码（最大兼容性，绕开网页内视频流兼容问题）=====
+let _scanInput=null;
 const scanOverlay=document.getElementById('scanOverlay');
 const scanReader=document.getElementById('scanReader');
 const scanBtn=document.getElementById('scanBtn');
 const scanClose=document.getElementById('scanClose');
-const scanTorch=document.getElementById('scanTorch');
+const scanShoot=document.getElementById('scanShoot');
 function closeScan(){
-  if(_nativeStop){ try{_nativeStop();}catch(e){} _nativeStop=null; }
-  _torchOn=false; if(scanTorch) scanTorch.classList.remove('on');
-  if(_scanner&&_scanning){ try{ _scanner.stop().then(function(){_scanning=false;}).catch(function(){}); }catch(e){} }
   scanOverlay.hidden=true; scanReader.innerHTML='';
 }
-async function openScan(){
-  if(window.BarcodeDetector){
-    try{ await startNativeScan(); return; }catch(e){ /* 落到兜底 */ }
-  }
-  if(typeof Html5Qrcode!=='undefined'){ startHtml5Scan(); return; }
-  alert('当前环境不支持扫码，请手动输入串码');
+function openScan(){
+  scanOverlay.hidden=false;
+  scanReader.innerHTML='<div class="scan-status">点击下方「拍照识别」调起相机</div>';
+  // 在用户手势内直接调起相机（部分浏览器需此链路才允许）
+  ensureScanInput().value='';
+  ensureScanInput().click();
 }
-// 默认使用后置主摄（1 倍焦段），不强行挑长焦
-
-// 视频轨：连续对焦 + 3x 变焦 + 闪光灯（按设备能力探测）
-function applyTrackOptimizations(track){
-  if(!track||!track.getCapabilities) return;
-  const cap=track.getCapabilities();
-  if(cap.focusMode&&Array.isArray(cap.focusMode)&&cap.focusMode.indexOf('continuous')>=0){
-    track.applyConstraints({focusMode:'continuous'}).catch(function(){});
-  }
-  if(scanTorch){
-    const canTorch=!!cap.torch;
-    scanTorch.style.display=canTorch?'flex':'none';
-    if(canTorch){
-      scanTorch.onclick=function(){
-        if(!track.getCapabilities||!track.getCapabilities().torch) return;
-        _torchOn=!_torchOn;
-        track.applyConstraints({torch:_torchOn}).catch(function(){});
-        scanTorch.classList.toggle('on',_torchOn);
-      };
-    }
+function ensureScanInput(){
+  if(_scanInput) return _scanInput;
+  _scanInput=document.createElement('input');
+  _scanInput.type='file';
+  _scanInput.accept='image/*';
+  _scanInput.setAttribute('capture','environment');
+  _scanInput.style.display='none';
+  _scanInput.addEventListener('change', onScanFilePicked);
+  document.body.appendChild(_scanInput);
+  return _scanInput;
+}
+function onScanFilePicked(e){
+  const file=e.target.files&&e.target.files[0];
+  if(!file){ return; }
+  decodeImageFile(file);
+}
+async function decodeImageFile(file){
+  scanReader.innerHTML='<div class="scan-status">识别中…</div>';
+  let text=null;
+  try{
+    if(window.BarcodeDetector){ text=await decodeNative(file); }
+    else if(typeof Html5Qrcode!=='undefined'){ text=await decodeHtml5(file); }
+  }catch(err){}
+  if(text){
+    closeScan(); triggerQueryFromScan(text);
+  }else{
+    scanReader.innerHTML='<div class="scan-status err">未识别到条码<br>请重拍或手动输入</div><button class="scan-shoot" id="scanRetry" type="button">重拍</button>';
+    const rb=document.getElementById('scanRetry');
+    if(rb) rb.addEventListener('click', function(){ ensureScanInput().value=''; ensureScanInput().click(); });
   }
 }
-async function startNativeScan(){
-  scanOverlay.hidden=false; scanReader.innerHTML='';
-  let stream, lastErr=null;
-  const base={facingMode:'environment'};
-  const tryConstraints=[
-    {video:Object.assign({width:{ideal:1920},height:{ideal:1080}},base),audio:false},
-    {video:Object.assign({width:{ideal:1280},height:{ideal:720}},base),audio:false},
-    {video:base,audio:false}
-  ];
-  for(const c of tryConstraints){ try{ stream=await navigator.mediaDevices.getUserMedia(c); break; }catch(err){ lastErr=err; } }
-  if(!stream){ scanOverlay.hidden=true; alert('无法启动摄像头：'+((lastErr&&lastErr.message)||lastErr)); return; }
-  _nativeTrack=stream.getVideoTracks()[0];
-  applyTrackOptimizations(_nativeTrack);
-  const video=document.createElement('video');
-  video.srcObject=stream; video.setAttribute('playsinline',''); video.setAttribute('autoplay',''); video.muted=true;
-  scanReader.appendChild(video);
-  await video.play().catch(function(){});
+function fileToImage(file){
+  return new Promise(function(res,rej){
+    const url=URL.createObjectURL(file);
+    const img=new Image();
+    img.onload=function(){ res(img); };
+    img.onerror=function(){ try{URL.revokeObjectURL(url);}catch(e){} rej(new Error('img')); };
+    img.src=url;
+  });
+}
+async function decodeNative(file){
+  const img=await fileToImage(file);
   let formats=[];
   try{ formats=await BarcodeDetector.getSupportedFormats(); }catch(e){}
-  const detector=new BarcodeDetector({formats:formats.length?formats:undefined});
-  let scanning=true, busy=false;
-  _nativeStop=function(){ scanning=false; try{ stream.getTracks().forEach(function(t){t.stop();}); }catch(e){} };
-  const tick=async function(){
-    if(!scanning) return;
-    if(!busy && video.readyState>=2){
-      busy=true;
-      try{
-        const codes=await detector.detect(video);
-        if(codes&&codes.length){ const t=(codes[0].rawValue||'').trim(); closeScan(); triggerQueryFromScan(t); return; }
-      }catch(e){}
-      busy=false;
-    }
-    requestAnimationFrame(tick);
-  };
-  requestAnimationFrame(tick);
+  const det=new BarcodeDetector({formats:formats.length?formats:undefined});
+  const codes=await det.detect(img);
+  if(codes&&codes.length) return (codes[0].rawValue||'').trim();
+  return null;
 }
-function startHtml5Scan(){
-  scanOverlay.hidden=false; scanReader.innerHTML='';
-  if(!_scanner) _scanner=new Html5Qrcode('scanReader', {
-    formatsToSupport:[0,1,2,3,4,5,6,8,9,10,11,14,15],
-    useBarCodeDetectorIfSupported:true,
-    showTorchButtonIfSupported:true,
-    showZoomSliderIfSupported:true,
-    defaultZoomValueIfSupported:1
+function decodeHtml5(file){
+  return new Promise(function(resolve){
+    try{
+      const s=new Html5Qrcode('scanReader', {formatsToSupport:[0,1,2,3,4,5,6,8,9,10,11,14,15], useBarCodeDetectorIfSupported:true});
+      s.scanFile(file, false).then(function(t){ resolve(t); }).catch(function(){ resolve(null); });
+    }catch(e){ resolve(null); }
   });
-  _scanner.start({facingMode:'environment'}, {fps:15, qrbox:function(vw,vh){const s=Math.min(vw,vh);return {width:Math.floor(s*0.8),height:Math.floor(s*0.5)};},
-      videoConstraints:{facingMode:'environment',width:{ideal:1920},height:{ideal:1080}}},
-    function(decodedText){ closeScan(); triggerQueryFromScan(decodedText); },
-    function(){}
-  ).then(function(){_scanning=true;}).catch(function(err){ scanOverlay.hidden=true; alert('无法启动摄像头：'+((err&&err.message)||err)); });
 }
 function triggerQueryFromScan(text){
   const q=String(text||'').trim();
@@ -1449,7 +1436,8 @@ function triggerQueryFromScan(text){
 }
 scanBtn.addEventListener('click', openScan);
 scanClose.addEventListener('click', closeScan);
-window.__scanDebug={openScan:openScan,closeScan:closeScan,triggerQueryFromScan:triggerQueryFromScan};
+if(scanShoot) scanShoot.addEventListener('click', function(){ ensureScanInput().value=''; ensureScanInput().click(); });
+window.__scanDebug={openScan:openScan,closeScan:closeScan,triggerQueryFromScan:triggerQueryFromScan,decodeImageFile:decodeImageFile};
 
 </script>
 
