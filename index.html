@@ -454,6 +454,20 @@ body::before,body::after{display:none!important}
 .qv7c-chip,.v111-login-mark{box-shadow:inset 0 1px 1px rgba(255,255,255,.6),0 4px 12px rgba(101,88,217,.18)!important}
 </style>
 
+<script defer src="html5-qrcode.min.js"></script>
+<style>
+#scanBtn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;margin:0 1px 0 2px;padding:0;border:0;background:transparent;color:#3a3a3c;cursor:pointer;border-radius:9px}
+#scanBtn svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#scanBtn:active{background:rgba(0,0,0,.06);color:#007aff}
+.scan-overlay{position:fixed;inset:0;z-index:9999;background:#0b0b0c;display:flex;flex-direction:column;align-items:center;padding-top:env(safe-area-inset-top)}
+.scan-overlay[hidden]{display:none}
+.scan-head{width:100%;max-width:480px;display:flex;align-items:center;justify-content:space-between;padding:14px 14px 8px;color:#fff;font-size:15px;font-weight:600;box-sizing:border-box}
+.scan-close{width:38px;height:38px;border:0;background:rgba(255,255,255,.14);color:#fff;border-radius:50%;font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.scan-close:active{background:rgba(255,255,255,.28)}
+#scanReader{width:100%;max-width:480px;background:#161618;border:1px solid rgba(255,255,255,.10);border-radius:14px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+#scanReader video{width:100%!important;height:auto!important;object-fit:cover;display:block}
+.scan-tip{color:#fff;opacity:.78;font-size:13px;margin-top:18px;text-align:center;padding:0 28px;line-height:1.65}
+</style>
 </head>
 <body>
 <section class="v111-login" id="v111Login" aria-label="登录">
@@ -496,9 +510,16 @@ body::before,body::after{display:none!important}
       <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg></span>
       <input id="searchInput" aria-label="搜索商品库存" enterkeyhint="search" autocomplete="off" spellcheck="false" inputmode="search"
              placeholder="搜索 型号 / 编码 / 串码">
+      <button class="scan" id="scanBtn" type="button" aria-label="扫码查串码"><svg viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="21"/></svg></button>
       <button class="clr" id="clrBtn" aria-label="清空">✕</button>
     </div>
   </div>
+</div>
+
+<div class="scan-overlay" id="scanOverlay" hidden>
+  <div class="scan-head"><span>对准产品条码 / 二维码</span><button class="scan-close" id="scanClose" aria-label="关闭">✕</button></div>
+  <div id="scanReader"></div>
+  <div class="scan-tip">将摄像头对准产品上的串码标签，识别后自动查询该机全生命周期</div>
 </div>
 
 <nav id="v54Nav" class="qv120-query-only-nav" aria-label="库存查询导航">
@@ -1321,6 +1342,37 @@ clrBtn.onclick=()=>{searchInput.value='';showDemo=false;traceActiveSn=null;searc
 
 window.__queryAudit={searchInventory,searchInventoryCore,parseQueryStoreIntent,appendSearchQualifierPreserveStore,tokenize,skuCatalog,scopedRows,rowsByCode,fitSkuNames,QUERY_STORES,stockValue:saleStockValue,versionTagsOfText,functionalVariantOfText,normalizeSearchChars,normalizeCapacityInQuery,dataDiagnostics:window.LJC_DATA_DIAGNOSTICS,buildDeviceQueryContext};
 render();
+
+// ===== 扫码查串码（独立于库存搜索，不改动原逻辑）=====
+let _scanner=null,_scanning=false;
+const scanOverlay=document.getElementById('scanOverlay');
+const scanReader=document.getElementById('scanReader');
+const scanBtn=document.getElementById('scanBtn');
+const scanClose=document.getElementById('scanClose');
+function closeScan(){
+  if(_scanner&&_scanning){ try{ _scanner.stop().then(function(){_scanning=false;}).catch(function(){}); }catch(e){} }
+  scanOverlay.hidden=true; scanReader.innerHTML='';
+}
+function openScan(){
+  if(typeof Html5Qrcode==='undefined'){ alert('扫码组件未加载，请检查网络后重试'); return; }
+  scanOverlay.hidden=false;
+  if(!_scanner) _scanner=new Html5Qrcode('scanReader');
+  _scanner.start({facingMode:'environment'}, {fps:10, qrbox:{width:240,height:150}},
+    function(decodedText){ closeScan(); triggerQueryFromScan(decodedText); },
+    function(){}
+  ).then(function(){_scanning=true;}).catch(function(err){ scanOverlay.hidden=true; alert('无法启动摄像头：'+((err&&err.message)||err)); });
+}
+function triggerQueryFromScan(text){
+  const q=String(text||'').trim();
+  if(!q) return;
+  searchInput.value=q; sbox.classList.add('has');
+  if(isSerialLike(q)){ clearTimeout(serialDebounceTimer); traceActiveSn=null; runSerialTrace(q); }
+  else { lastQuery=''; scheduleRender(true); }
+}
+scanBtn.addEventListener('click', openScan);
+scanClose.addEventListener('click', closeScan);
+window.__scanDebug={openScan:openScan,closeScan:closeScan,triggerQueryFromScan:triggerQueryFromScan};
+
 </script>
 
 
