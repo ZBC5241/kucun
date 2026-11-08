@@ -454,6 +454,83 @@ body::before,body::after{display:none!important}
 .qv7c-chip,.v111-login-mark{box-shadow:inset 0 1px 1px rgba(255,255,255,.6),0 4px 12px rgba(101,88,217,.18)!important}
 </style>
 
+<style id="ui-designer-v5">
+/* ==================================================================
+   UI Designer v5 · 唯一设计真源 (Single Source of Truth)
+   ------------------------------------------------------------------
+   之后所有视觉改动只改本层。上方 v1–v4 历史层仅作布局/响应式/无障碍
+   骨架与降级回退，勿再叠加新的覆盖层，避免视觉语言再次碎片化。
+
+   设计原则：iOS 中性材质 / 单一系统蓝强调色 / WCAG AA 对比度 /
+             4px 间距节奏 / 内容优先、装饰让位
+   ================================================================== */
+:root{
+  /* 品牌与强调 —— 单一系统蓝，彻底清除历史紫色残留 */
+  --accent:#007aff;
+  --accent-soft:rgba(0,122,255,.10);
+  --accent-ink:#0062cc;
+  /* 文字 —— 白底对比度 >= 7:1 (WCAG AA/AAA) */
+  --ink:#1c1c1e;
+  --sub:#56565c;
+  /* 表面 */
+  --bg:#F6F7F9;
+  --surface:#ffffff;
+  --edge:rgba(60,60,67,.10);
+  --shadow-card:0 1px 2px rgba(0,0,0,.04),0 6px 16px rgba(0,0,0,.05);
+  /* 语义色 */
+  --ok:#0f8a5f;        /* 有货 */
+  --warn:#a86400;      /* 样机 / 演示 */
+  --danger:#d92d20;    /* 促销 / 到手价 */
+  /* 几何 —— 4px 节奏 */
+  --r-panel:26px; --r-card:20px; --r-pill:999px;
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px;
+}
+
+/* ---- P1 主色统一：清除紫色残留，单一系统蓝 ----
+   以下规则带 !important 是为了压过历史层的同级 !important 紫色声明；
+   选择器均为精确组件，不涉及通配符/全局共享类，滚动收起动画等更高特异性规则不受影响。 */
+.qv7c-chip,.v111-login-mark{
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.6),0 4px 12px rgba(0,122,255,.18)!important;
+}
+.qv66-demo-btn,.v101-choice{
+  border-color:rgba(0,122,255,.18)!important;
+  color:var(--accent-ink)!important;
+  background:var(--accent-soft)!important;
+}
+.qv66-demo-btn.on{background:var(--accent)!important;color:#fff!important}
+.v105-query-store-context{background:var(--accent-soft)!important}
+#v54Nav button{background:var(--accent-soft)!important;color:var(--accent-ink)!important}
+button:focus-visible,input:focus-visible{outline-color:var(--accent)!important}
+.updated b,.search-box .ico{color:var(--accent-ink)!important}
+
+/* ---- P2 可读性与对比度：次要文字统一为 --sub (7:1) ---- */
+#queryPage .qv62-name,#queryPage .qv62-name span{color:var(--ink)}
+.qv66-mini b{color:var(--ink)}
+.qv66-mini span,.qv7c-sub,.updated,.qv64-empty-sub,
+.qv58-limit-note,.qv58-empty-sub,.cnt{color:var(--sub)}
+.qv62-qty span{color:var(--sub)}
+
+/* ---- P3 底部导航减重：保留 DOM 与滚动收起动画，仅降低视觉体量 ---- */
+#v54Nav{width:120px;padding:var(--sp-1);box-shadow:0 1px 2px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.05)}
+#v54Nav button{height:44px;font-size:13px;border-radius:var(--r-pill)}
+
+/* ---- P0 留白回收：仅桌面（搜索框为 sticky，不占底部空间）。
+   移动端保持原 180px 留白：底部固定搜索浮层占 148px，减留白会让末尾卡片被遮挡。 ---- */
+@media(min-width:768px){
+  #queryPage{padding-bottom:96px}
+}
+@media(max-width:767px){
+  /* P2 移动端编码 >=12px；次要文字加深到 WCAG AA */
+  #queryPage .qv62-code{font-size:12px!important;line-height:1.4!important;color:var(--sub)!important}
+  #queryPage .qv62-store{color:var(--sub)!important}
+  #queryPage .qv62-cat,#queryPage .qv62-demo{font-size:10.5px!important;color:var(--sub)!important}
+  #queryPage .qv62-qty span{color:var(--sub)!important}
+  .qv7c-sub,.updated{color:var(--sub)!important}
+}
+@media(min-width:768px){
+  #queryPage .qv62-code{font-size:12px!important;line-height:1.35!important;color:var(--sub)!important}
+}
+</style>
 </head>
 <body>
 <section class="v111-login" id="v111Login" aria-label="登录">
@@ -1563,12 +1640,13 @@ if(readSession())openWorkbench();else showLogin();
 })();
 </script>
 <style>.qv62-meta2{flex-wrap:nowrap !important;white-space:nowrap}
-.qv62-price{display:flex;flex-direction:column;justify-content:center;gap:2px;padding-left:12px;margin-left:2px;border-left:1px solid #ececf0;flex:0 0 auto;align-self:center;text-align:left}
-.qv62-price .orig{color:#9aa0a6;font-size:11px}
-.qv62-price .orig.cut-orig{text-decoration:line-through}
-.qv62-price .cut{color:#e53935;font-size:12px}
-.qv62-price .final{color:#e53935;font-weight:700;font-size:15px;line-height:1.15}
-.qv62-price .np{color:#bdbdbd;font-size:11px}
+/* UI Designer v5 · 价格小组件：与卡片同材质，克制、不抢库存数字权重 */
+.qv62-price{display:flex;flex-direction:column;justify-content:center;gap:3px;padding:7px 10px;margin-left:8px;border:1px solid var(--edge);border-radius:12px;background:rgba(120,120,128,.045);flex:0 0 auto;align-self:center;text-align:right}
+.qv62-price .orig{color:var(--sub);font-size:10.5px;line-height:1.2}
+.qv62-price .orig.cut-orig{text-decoration:none;opacity:.78}
+.qv62-price .cut{color:var(--danger);font-size:10.5px;line-height:1.2}
+.qv62-price .final{color:var(--danger);font-weight:700;font-size:13px;line-height:1.15}
+.qv62-price .np{color:var(--sub);font-size:10.5px}
 /* ===== kucun-dark-align-v2（2026-10-26）：深色对齐「星联会员-膜套包汇总」效果 =====
    深底#0D0F14 + 面板#161922 + 亮字 + 提亮紫；置于末尾级联必胜，浅色零影响 */
 </style>
