@@ -1404,6 +1404,49 @@ render();
 
 
 <script id="v111-auth-script">
+
+/* ===== 【18号 2026-11-12】来访留痕 =====
+   登录仍是纯本地账号表校验，这里只额外发一条「谁、几点、从哪台设备来」；
+   不记密码、不参与登录判断。发不出去先存浏览器，通了自动补报。 */
+(function(){
+  var BASE=(location.hostname==='127.0.0.1'||location.hostname==='localhost')
+    ?'http://127.0.0.1:8802':'https://lijiacun-board.serveousercontent.com';
+  var Q='sb_audit_q_v1', DK='sb_dev_id_v1', OK='sb_audit_open_v1';
+  function dev(){try{var d=localStorage.getItem(DK);if(!d){d='D'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);localStorage.setItem(DK,d)}return d}catch(e){return 'D-unknown'}}
+  function ua(){var u=navigator.userAgent||'',m=/iPhone|iPad|Android|HarmonyOS|Huawei|Macintosh|Windows/i.exec(u);return (m?m[0]:'device')+' '+(screen.width||0)+'x'+(screen.height||0)}
+  function qget(){try{var a=JSON.parse(localStorage.getItem(Q)||'[]');return Array.isArray(a)?a:[]}catch(e){return []}}
+  function qset(a){try{localStorage.setItem(Q,JSON.stringify(a.slice(-60)))}catch(e){}}
+  var busy=false;
+  function flush(){
+    if(busy)return; var a=qget(); if(!a.length)return; busy=true;
+    var left=[],i=0;
+    function next(){
+      if(i>=a.length){qset(left);busy=false;return}
+      var item=a[i++],img=new Image(),done=false;
+      function fin(ok){if(done)return;done=true;if(!ok)left.push(item);next()}
+      img.onload=function(){fin(true)}; img.onerror=function(){fin(false)};
+      setTimeout(function(){fin(false)},6000);
+      try{img.src=BASE+'/api/audit?'+item+'&t='+Date.now()}catch(e){fin(false)}
+    }
+    next();
+  }
+  function send(sys,act,acct,store){
+    var parts=['sys='+encodeURIComponent(sys),'act='+encodeURIComponent(act),
+      'acct='+encodeURIComponent(acct||''),'store='+encodeURIComponent(store||''),
+      'dev='+encodeURIComponent(dev()),'ua='+encodeURIComponent(ua()),'ts='+Date.now()];
+    var a=qget();a.push(parts.join('&'));qset(a);flush();
+  }
+  function openOnce(sys,acct,store){
+    try{var k=OK+'|'+sys+'|'+dev(),last=parseInt(localStorage.getItem(k)||'0',10);
+      if(Date.now()-last<10*60*1000)return;
+      localStorage.setItem(k,String(Date.now()))}catch(e){}
+    send(sys,'open',acct,store);
+  }
+  window.SB_AUDIT={send:send,open:openOnce,flush:flush,dev:dev};
+  setTimeout(flush,1200);
+  window.addEventListener('online',flush);
+})();
+
 (()=>{
 const AUTH_KEY='inventory-query-auth-v119';
 const AUTH_VERSION='11.9';
@@ -1464,15 +1507,16 @@ form?.addEventListener('submit',async e=>{
   try{
     const digest=await sha256(p);
     if(u===USER&&digest===PASS_SHA256){
+      try{SB_AUDIT.send('inventory','ok',u,'')}catch(e){}
       writeSession();pass.value='';openWorkbench();
     }
-    else{error.textContent='账号或密码错误，请重新输入';pass.value='';pass.focus()}
+    else{try{SB_AUDIT.send('inventory','fail',u,'')}catch(e){}error.textContent='账号或密码错误，请重新输入';pass.value='';pass.focus()}
   }catch(err){error.textContent='当前浏览器无法完成登录验证，请换用 Chrome / Edge 重试'}
   finally{submitting=false;if(btn){btn.disabled=false;btn.textContent='登录'}}
 });
-logout?.addEventListener('click',()=>{clearSession();showLogin()});
+logout?.addEventListener('click',()=>{try{SB_AUDIT.send('inventory','logout',USER,'')}catch(e){}clearSession();showLogin()});
 window.LJC_AUTH={version:AUTH_VERSION,isSignedIn:signedIn,expiresInHours:24,logout:()=>{clearSession();showLogin()}};
-if(readSession())openWorkbench();else showLogin();
+if(readSession()){openWorkbench();try{SB_AUDIT.open('inventory',USER,'')}catch(e){}}else showLogin();
 })();
 </script>
 
