@@ -76,7 +76,15 @@
 
 
 
-<script>try{const a=JSON.parse(localStorage.getItem('inventory-query-auth-v119')||'null');if(a&&a.user==='xzy'&&a.version==='11.9'&&Number(a.expiresAt)>Date.now())document.documentElement.classList.add('ljc-authenticated');else if(a)localStorage.removeItem('inventory-query-auth-v119')}catch(e){try{localStorage.removeItem('inventory-query-auth-v119')}catch(_){}}</script>
+<script>/* 【18号 2026-11-13】账号改为花名册姓名：旧共用账号 xzy 的登录态一律作废，需用本人姓名重新登录一次 */
+try{const k='inventory-query-auth-v120',a=JSON.parse(localStorage.getItem(k)||'null');
+if(a&&a.user&&a.user!=='xzy'&&a.version==='12.0'&&Number(a.expiresAt)>Date.now())document.documentElement.classList.add('ljc-authenticated');
+else if(a)localStorage.removeItem(k);localStorage.removeItem('inventory-query-auth-v119');
+}catch(e){try{localStorage.removeItem('inventory-query-auth-v119')}catch(_){}}</script>
+<script>/* 【18号 2026-11-13】版本守卫：Pages 缓存 + 下拉刷新吃缓存，手机会长期停在旧登录页；首开强制刷一次，sessionStorage 防循环 */
+(function(){try{var V='kucun_20261113_1';if(localStorage.getItem('kucun_build_ver')===V)return;
+if(sessionStorage.getItem('kucun_build_reloading')===V)return;sessionStorage.setItem('kucun_build_reloading',V);
+localStorage.setItem('kucun_build_ver',V);location.reload(true);}catch(e){}})();</script>
 
 
 
@@ -540,6 +548,7 @@ button:focus-visible,input:focus-visible{outline-color:var(--accent)!important}
     <label class="v111-field"><span>账号</span><input id="v111User" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>
     <label class="v111-field"><span>密码</span><input id="v111Pass" name="password" type="password" autocomplete="current-password" required></label>
     <button class="v111-submit" type="submit">登录</button>
+    <p style="margin:10px 0 0;font-size:12px;line-height:1.6;color:#6b7280;text-align:center">账号 = 花名册里的本人姓名（与钉钉一致，带 B / C 后缀可省略）<br>密码统一为 <b>1</b>；共用账号 xzy 已停用</p>
     <div class="v111-login-error" id="v111LoginError" role="alert"></div>
 
   </form>
@@ -1448,10 +1457,69 @@ render();
 })();
 
 (()=>{
-const AUTH_KEY='inventory-query-auth-v119';
-const AUTH_VERSION='11.9';
-const USER='xzy';
-const PASS_SHA256='6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b';
+const AUTH_KEY='inventory-query-auth-v120';
+const AUTH_VERSION='12.0';
+/* 【18号 2026-11-13】账号 = 钉钉通讯录花名册里的 121 个姓名
+   真实采集时刻 2026-11-13 01:27:33（outputs/roster_data.json，遍历全部 27 个部门）。
+   B/C 后缀是钉钉原始写法，原样保留；ALIASES 让不带后缀也能登（不是额外账号）。
+   取消共用账号 xzy：每人用自己的姓名登录，来访留痕才能看出具体是谁在用。 */
+const ACCOUNTS = {
+  /* 中台 · 6 人 */
+  '杨珠':1, '吕锦涛':1, '周阳':1, '贺雅芳':1, '蔡礼红':1, '罗宇':1,
+  /* 华为DT51合作店 · 1 人 */
+  '肖炜':1,
+  /* 华为事业部 · 10 人 */
+  '魏蓓摇':1, '李军B':1, '杨萌B':1, '高明':1, '韦佳雯':1, '余端':1,
+  '杨晨晨B':1, '李杨':1, '谢姗B':1, '谭宇婷B':1,
+  /* 华为凯德广场授权体验店 · 3 人 */
+  '马佳坤B':1, '赵甫':1, '王健B':1,
+  /* 华为华阳城合作店 · 6 人 */
+  '王莹莹B':1, '张梅B':1, '李俊琪':1, '田蕊':1, '乔玉宇':1, '高若彤':1,
+  /* 华为大兴路龙湖授权体验店 · 4 人 */
+  '李嘉怡':1, '王剑朋':1, '付清怡B':1, '定凯丰':1,
+  /* 华为智能生活馆·西安大唐不夜城 · 6 人 */
+  '闫岁红':1, '周帅宇':1, '杨振兴':1, '余莹莹':1, '郑童鑫':1, '葛晓梅':1,
+  /* 华为智能生活馆·西安曲江大悦城 · 9 人 */
+  '移雪平':1, '杜咪咪C':1, '种国阳':1, '王智鹏':1, '刘千姿':1, '韩敏洁':1,
+  '郭恩B':1, '贾妮娜':1, '冯金晨':1,
+  /* 华为智能生活馆·西安荟聚 · 15 人 */
+  '高照阳':1, '贾子龙':1, '辛苗':1, '王豪豪':1, '郭瑞琴':1, '鲁婷':1,
+  '王昱昊':1, '任枭雄':1, '王舒彤':1, '李豪':1, '靖柳祥':1, '黄芯雨':1,
+  '左玲':1, '卢毓龙B':1, '陈志洁':1,
+  /* 华为智能生活馆·西安高新万达 · 11 人 */
+  '贺港':1, '李玉洁':1, '林长龙':1, '冯乐':1, '纪强B':1, '纪凯军':1,
+  '乔帅雷':1, '寄托':1, '王文萱B':1, '程园园':1, '王兴琴':1,
+  /* 华为朝阳益田授权体验店 · 5 人 */
+  '聂晓蕊B':1, '刘更B':1, '窦云雷':1, '张行B':1, '张哲B':1,
+  /* 华为李家村万达授权体验店 · 4 人 */
+  '杨丽华':1, '张博晨':1, '邵乐乐':1, '李泽':1,
+  /* 华为浐灞优享授权体验店 · 5 人 */
+  '王奇':1, '郑灵灵':1, '张亚荣B':1, '欧阳高慧':1, '刘笑笑':1,
+  /* 华为臻选店·西安SKP · 5 人 */
+  '王福利B':1, '和思成':1, '唐盼盼':1, '徐小雅':1, '石佳豪':1,
+  /* 华为金辉环球授权体验店 · 6 人 */
+  '冉婷婷':1, '李俊咔':1, '翟羽佳B':1, '文辉B':1, '李旬':1, '张倩':1,
+  /* 华为长乐授权体验店 · 4 人 */
+  '田江':1, '汪瑞B':1, '张赫桐':1, '解伟B':1,
+  /* 华为长安万科广场授权体验店 · 5 人 */
+  '魏莹':1, '凌涛':1, '郑元坤C':1, '刘阳阳C':1, '王树强':1,
+  /* 华为高新中大国际授权体验店 · 5 人 */
+  '杨朝朝':1, '郭思梦':1, '田琛玺':1, '陈李康B':1, '刘冬':1,
+  /* 华为高新大茂城授权体验店 · 7 人 */
+  '郑丽君':1, '杨丽君':1, '雷杨B':1, '韩沐妍':1, '王良莹':1, '陈妙':1,
+  '李璐':1,
+  /* 华为高新金鹰授权体验店 · 4 人 */
+  '李东海':1, '冯克宇':1, '宁荣辉':1, '张磊强B':1,
+};
+const ALIASES = {
+  '李军':'李军B', '杨萌':'杨萌B', '杨晨晨':'杨晨晨B', '谢姗':'谢姗B', '谭宇婷':'谭宇婷B',
+  '汪瑞':'汪瑞B', '解伟':'解伟B', '陈李康':'陈李康B', '翟羽佳':'翟羽佳B', '文辉':'文辉B',
+  '马佳坤':'马佳坤B', '王健':'王健B', '付清怡':'付清怡B', '聂晓蕊':'聂晓蕊B', '刘更':'刘更B',
+  '张行':'张行B', '张哲':'张哲B', '张亚荣':'张亚荣B', '郑元坤':'郑元坤C', '刘阳阳':'刘阳阳C',
+  '雷杨':'雷杨B', '张磊强':'张磊强B', '卢毓龙':'卢毓龙B', '纪强':'纪强B', '王文萱':'王文萱B',
+  '王福利':'王福利B', '杜咪咪':'杜咪咪C', '郭恩':'郭恩B', '王莹莹':'王莹莹B', '张梅':'张梅B',
+};
+const PASS_SHA256='6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b'; /* 统一口令 1 */
 const SESSION_MS=24*60*60*1000; // FIX(2026-10-08): 登录态有效期由 6小时 改为 24小时
 const form=document.getElementById('v111LoginForm'),user=document.getElementById('v111User'),pass=document.getElementById('v111Pass'),error=document.getElementById('v111LoginError'),logout=document.getElementById('v111Logout');
 
@@ -1461,13 +1529,13 @@ function clearSession(){try{localStorage.removeItem(AUTH_KEY)}catch(e){}}
 function readSession(){
   try{
     const v=JSON.parse(localStorage.getItem(AUTH_KEY)||'null');
-    if(v&&v.user===USER&&v.version===AUTH_VERSION&&Number(v.expiresAt)>Date.now())return v;
+    if(v&&v.user&&v.user!=='xzy'&&ACCOUNTS[v.user]&&v.version===AUTH_VERSION&&Number(v.expiresAt)>Date.now())return v;
   }catch(e){}
   clearSession();return null;
 }
 function showLogin(){
   document.documentElement.classList.remove('ljc-authenticated');
-  if(pass)pass.value='';if(error)error.textContent='';
+  if(pass)pass.value='';if(user)user.value='';if(error)error.textContent='';
   desktopFocus(user);
 }
 function openWorkbench(){
@@ -1478,24 +1546,57 @@ function openWorkbench(){
   window.scrollTo({top:0,behavior:'auto'});
   desktopFocus(document.getElementById('searchInput'));
 }
-function writeSession(){
+function writeSession(acct){
   const now=Date.now();
-  try{localStorage.setItem(AUTH_KEY,JSON.stringify({user:USER,version:AUTH_VERSION,signedAt:new Date(now).toISOString(),expiresAt:now+SESSION_MS}))}catch(e){}
+  try{localStorage.setItem(AUTH_KEY,JSON.stringify({user:acct,version:AUTH_VERSION,signedAt:new Date(now).toISOString(),expiresAt:now+SESSION_MS}))}catch(e){}
+}
+/* 【18号 2026-11-13】兜底算法修复：原那段老式 SHA-256 在部分浏览器（file:// / 无 crypto.subtle）会算错，
+   导致双击本地文件时明明密码是 1 也登不上。改用两店看板里已验证过的同一份纯 JS 实现，任何浏览器结果一致。 */
+function kucunSha256(str){
+  const K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+           0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+           0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+           0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+           0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+           0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+           0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+           0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  const H=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  let src;
+  if(typeof TextEncoder !== 'undefined') src = new TextEncoder().encode(str);
+  else { src = new Uint8Array(str.length); for(let i=0;i<str.length;i++) src[i] = str.charCodeAt(i) & 0xff; }
+  const len = Math.ceil((src.length + 9) / 64) * 64;
+  const buf = new Uint8Array(len);
+  buf.set(src); buf[src.length] = 0x80;
+  const dv = new DataView(buf.buffer);
+  dv.setUint32(len - 4, (src.length * 8) >>> 0, false);   /* 高 32 位恒为 0（口令远小于 512MB） */
+  const w = new Uint32Array(64), R = (x,n) => (x >>> n) | (x << (32 - n));
+  for(let off=0; off<len; off+=64){
+    for(let i=0;i<16;i++) w[i] = dv.getUint32(off + i*4, false);
+    for(let i=16;i<64;i++){
+      const x=w[i-15], y=w[i-2];
+      const s0=R(x,7)^R(x,18)^(x>>>3), s1=R(y,17)^R(y,19)^(y>>>10);
+      w[i]=(w[i-16]+s0+w[i-7]+s1)>>>0;
+    }
+    let a=H[0],b=H[1],c=H[2],d=H[3],e=H[4],f=H[5],g=H[6],h=H[7];
+    for(let i=0;i<64;i++){
+      const S1=R(e,6)^R(e,11)^R(e,25), ch=(e&f)^(~e&g);
+      const t1=(h+S1+ch+K[i]+w[i])>>>0;
+      const S0=R(a,2)^R(a,13)^R(a,22), mj=(a&b)^(a&c)^(b&c);
+      const t2=(S0+mj)>>>0;
+      h=g; g=f; f=e; e=(d+t1)>>>0; d=c; c=b; b=a; a=(t1+t2)>>>0;
+    }
+    H[0]=(H[0]+a)>>>0; H[1]=(H[1]+b)>>>0; H[2]=(H[2]+c)>>>0; H[3]=(H[3]+d)>>>0;
+    H[4]=(H[4]+e)>>>0; H[5]=(H[5]+f)>>>0; H[6]=(H[6]+g)>>>0; H[7]=(H[7]+h)>>>0;
+  }
+  return H.map(x => x.toString(16).padStart(8,'0')).join('');
 }
 async function sha256(text){
   if(window.crypto&&window.crypto.subtle&&window.TextEncoder){
     const buf=await window.crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));
     return Array.from(new Uint8Array(buf)).map(x=>x.toString(16).padStart(2,'0')).join('');
   }
-  // Fallback for unusual local-file environments. This is only a compatibility fallback for the internal test layer.
-  function rr(n,x){return (x>>>n)|(x<<(32-n))}
-  const maxWord=Math.pow(2,32), words=[], ascii=unescape(encodeURIComponent(text));
-  let result='', hash=sha256.h=sha256.h||[], k=sha256.k=sha256.k||[], primeCounter=k.length, isComposite={};
-  for(let candidate=2;primeCounter<64;candidate++){if(!isComposite[candidate]){for(let i=0;i<313;i+=candidate)isComposite[i]=candidate;hash[primeCounter]=(Math.pow(candidate,.5)*maxWord)|0;k[primeCounter++]=(Math.pow(candidate,1/3)*maxWord)|0}}
-  const lengthProperty='length', asciiBitLength=ascii[lengthProperty]*8;
-  words[asciiBitLength>>5]|=0x80<<(24-asciiBitLength%32);words[((asciiBitLength+64>>9)<<4)+15]=asciiBitLength;
-  for(let j=0;j<words[lengthProperty];){const w=words.slice(j,j+=16), oldHash=hash.slice(0);hash=hash.slice(0,8);for(let i=0;i<64;i++){const i2=i+j, w15=w[i-15], w2=w[i-2], a=hash[0], e=hash[4];const temp1=hash[7]+(rr(6,e)^rr(11,e)^rr(25,e))+((e&hash[5])^((~e)&hash[6]))+k[i]+(w[i]=(i<16)?w[i]:(w[i-16]+(rr(7,w15)^rr(18,w15)^(w15>>>3))+w[i-7]+(rr(17,w2)^rr(19,w2)^(w2>>>10)))|0);const temp2=(rr(2,a)^rr(13,a)^rr(22,a))+((a&hash[1])^(a&hash[2])^(hash[1]&hash[2]));hash=[(temp1+temp2)|0].concat(hash);hash[4]=(hash[4]+temp1)|0;for(let i=0;i<8;i++)hash[i]=(hash[i]+oldHash[i])|0}}
-  for(let i=0;i<8;i++)for(let j=3;j+1;j--){const b=(hash[i]>>(j*8))&255;result+=(b<16?'0':'')+b.toString(16)}return result;
+  return kucunSha256(text);   /* 本地文件 / 无 crypto.subtle 的浏览器，同口径兜底 */
 }
 
 let submitting=false;
@@ -1503,20 +1604,26 @@ form?.addEventListener('submit',async e=>{
   e.preventDefault();if(submitting)return;
   const u=user.value.trim();const p=pass.value;
   if(!u||!p){error.textContent='请输入账号和密码';return}
+  if(u==='xzy'){
+    try{SB_AUDIT.send('inventory','fail',u,'')}catch(e){}
+    error.textContent='共用账号 xzy 已停用，请改用本人姓名登录（密码 1）';pass.value='';user.focus();return;
+  }
+  const acct=ACCOUNTS[u]?u:(ALIASES[u]||'');   /* 带 B/C 后缀可省略，归一到花名册原名 */
   submitting=true;const btn=form.querySelector('.v111-submit');if(btn){btn.disabled=true;btn.textContent='正在验证…'}
   try{
     const digest=await sha256(p);
-    if(u===USER&&digest===PASS_SHA256){
-      try{SB_AUDIT.send('inventory','ok',u,'')}catch(e){}
-      writeSession();pass.value='';openWorkbench();
+    if(acct&&digest===PASS_SHA256){
+      try{SB_AUDIT.send('inventory','ok',acct,'')}catch(e){}
+      writeSession(acct);pass.value='';openWorkbench();
     }
     else{try{SB_AUDIT.send('inventory','fail',u,'')}catch(e){}error.textContent='账号或密码错误，请重新输入';pass.value='';pass.focus()}
   }catch(err){error.textContent='当前浏览器无法完成登录验证，请换用 Chrome / Edge 重试'}
   finally{submitting=false;if(btn){btn.disabled=false;btn.textContent='登录'}}
 });
-logout?.addEventListener('click',()=>{try{SB_AUDIT.send('inventory','logout',USER,'')}catch(e){}clearSession();showLogin()});
-window.LJC_AUTH={version:AUTH_VERSION,isSignedIn:signedIn,expiresInHours:24,logout:()=>{clearSession();showLogin()}};
-if(readSession()){openWorkbench();try{SB_AUDIT.open('inventory',USER,'')}catch(e){}}else showLogin();
+function sessionUser(){const s=readSession();return s?s.user:''}
+logout?.addEventListener('click',()=>{try{SB_AUDIT.send('inventory','logout',sessionUser(),'')}catch(e){}clearSession();showLogin()});
+window.LJC_AUTH={version:AUTH_VERSION,isSignedIn:signedIn,expiresInHours:24,user:sessionUser,logout:()=>{clearSession();showLogin()}};
+(function(){const s=readSession();if(s){openWorkbench();try{SB_AUDIT.open('inventory',s.user,'')}catch(e){}}else showLogin();})();
 })();
 </script>
 
