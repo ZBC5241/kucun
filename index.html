@@ -824,7 +824,7 @@ function colorMatchByToken(it,t){
   return !!(idx&&(idx.colorFlat.includes(t)||idx.nameFlat.includes(t)||idx.seriesFlat.includes(t)));
 }
 const DEVICE_FAMILY_RE=/(mate\s*x|mate\s*\d|matepad|matebook|pura\s*x|pura\s*\d|nova\s*(?:\d|flip)|watch|freebuds|freeclip|freearc|freelace|band|手环|儿童手表|畅享|麦芒|擎云|pocket|智慧屏|sound|vision|gt\s*\d|fit\s*\d)/i;
-const FUNCTIONAL_WORDS=new Set(['promax','pro+','pro','ultra','rs','max','plus','se','air','mini']);
+const FUNCTIONAL_WORDS=new Set(['promax','pro+','pro','ultra','rs','max','plus','se','air','mini','view','flip','fold','neo','edge']);
 const GENERIC_DEVICE_WORDS=new Set(['华为','huawei','手机','平板','平板电脑','电脑','耳机','手表','智慧屏','穿戴']);
 
 function normalizeSearchChars(v){
@@ -874,6 +874,11 @@ function functionalVariantOfText(s){
     ['Air',/(?:^|[^a-z])air(?=\d|\s|[+()（）/,_\-]|[一-龥]|$)/i],
     ['Mini',/(?:matepad\s*)mini(?=\d|\s|[+()（）/,_\-]|[一-龥]|$)/i],
     ['Pro',/(?:^|[^a-z])pro(?=\d|\s|[+()（）/,_\-]|[一-龥]|$)/i],
+    ['View',/(?:pura\s*x|purax)\s*view/i],
+    ['Flip',/nova\s*flip/i],
+    ['Fold',/matebook\s*fold/i],
+    ['Neo',/freebuds\s*neo/i],
+    ['Edge',/matepad\s*edge/i],
     ['Max',/(?:^|[^a-z])max(?=\d|\s|[+()（）/,_\-]|[一-龥]|$)/i]
   ];
   for(const [name,re] of defs)if(re.test(raw))return name;
@@ -891,6 +896,11 @@ function functionalVariantOfQuery(tokens,q){
   if(ts.includes('mini')||ts.some(t=>/mini\d*$/.test(t)))return 'Mini';
   if(ts.includes('pro')||ts.some(t=>/pro\d*$/.test(t)))return 'Pro';
   if(ts.includes('max')||ts.some(t=>/max\d*$/.test(t)))return 'Max';
+  if(ts.includes('view')||ts.some(t=>/view\d*$/.test(t)))return 'View';
+  if(ts.includes('flip')||ts.some(t=>/flip\d*$/.test(t)))return 'Flip';
+  if(ts.includes('fold')||ts.some(t=>/fold\d*$/.test(t)))return 'Fold';
+  if(ts.includes('neo')||ts.some(t=>/neo\d*$/.test(t)))return 'Neo';
+  if(ts.includes('edge')||ts.some(t=>/edge\d*$/.test(t)))return 'Edge';
   return functionalVariantOfText(q);
 }
 function normalizeStoreName(wh){return String(wh||'').replace(/^(演示机|演示样机|样机|体验机|体验样机|陈列哑机|陈列样机|展示机|哑机)[-－—_]?/,'');}
