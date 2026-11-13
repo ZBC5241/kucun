@@ -82,7 +82,7 @@ if(a&&a.user&&a.user!=='xzy'&&a.version==='12.0'&&Number(a.expiresAt)>Date.now()
 else if(a)localStorage.removeItem(k);localStorage.removeItem('inventory-query-auth-v119');
 }catch(e){try{localStorage.removeItem('inventory-query-auth-v119')}catch(_){}}</script>
 <script>/* 【18号 2026-11-13】版本守卫：Pages 缓存 + 下拉刷新吃缓存，手机会长期停在旧登录页；首开强制刷一次，sessionStorage 防循环 */
-(function(){try{var V='kucun_20261113_2';if(localStorage.getItem('kucun_build_ver')===V)return;
+(function(){try{var V='kucun_20261113_3';if(localStorage.getItem('kucun_build_ver')===V)return;
 if(sessionStorage.getItem('kucun_build_reloading')===V)return;sessionStorage.setItem('kucun_build_reloading',V);
 localStorage.setItem('kucun_build_ver',V);location.reload(true);}catch(e){}})();</script>
 
@@ -1308,6 +1308,8 @@ function render(){
     return;
   }
   const res=searchInventory(q),sale=res.sale||[],demos=res.demos||[],storeMode=!!(res.storeIntent&&res.storeIntent.store),storeMatched=storeMode?(res.storeMatched||[]):[];
+  /* 换了个搜索词才记一笔：防抖后 render 一次 = 一次真实搜索，重复 render / 切演示机不重复记 */
+  if(qChanged&&window.SB_AUDIT&&SB_AUDIT.act){try{SB_AUDIT.act('search',q+' · 命中 '+sale.length+' 条')}catch(e){}}
   if(res.needsProduct){resultArea.innerHTML=storeOnlyPromptHTML(res);return;}
   if(qChanged&&!sale.length&&demos.length)showDemo=true;
   if(!sale.length&&!demos.length&&!storeMatched.length){if(res.variantResolution&&res.variantResolution.mode==='ambiguous-version'){resultArea.innerHTML=queryStoreContextHTML(res)+ambiguousVersionHTML(res.variantResolution);bindAmbiguousVersionChoices();}else resultArea.innerHTML=queryStoreContextHTML(res)+emptyResultHTML(res.productQ||q);return;}
@@ -1347,6 +1349,7 @@ function fmtTraceDate(d){
 async function runSerialTrace(sn){
   if(traceActiveSn===sn) return;
   traceActiveSn=sn;
+  try{if(window.SB_AUDIT&&SB_AUDIT.act)SB_AUDIT.act('trace',sn)}catch(e){}
   resultArea.innerHTML='<div style="padding:28px 16px;text-align:center;color:#666;font-size:13px;line-height:1.8;">正在查询串码全生命周期…</div>';
   const base='https://lijiacun-sn.serveousercontent.com/api/sn-trace?sn='+encodeURIComponent(sn)+'&range=90';
   let waited=0;
@@ -1438,11 +1441,19 @@ render();
     }
     next();
   }
-  function send(sys,act,acct,store){
+  function send(sys,act,acct,store,info){
     var parts=['sys='+encodeURIComponent(sys),'act='+encodeURIComponent(act),
       'acct='+encodeURIComponent(acct||''),'store='+encodeURIComponent(store||''),
+      'info='+encodeURIComponent(info||''),
       'dev='+encodeURIComponent(dev()),'ua='+encodeURIComponent(ua()),'ts='+Date.now()];
     var a=qget();a.push(parts.join('&'));qset(a);flush();
+  }
+  /* 【18号 2026-11-13】业务动作记账：只记「搜了什么 / 查了哪个串码」，不记密码、不记库存数值。
+     账号从登录态里现取，不额外维护名单；没登录不记，免得登录页产生噪声。 */
+  function who(){try{var s=JSON.parse(localStorage.getItem('inventory-query-auth-v120')||'null');return s&&s.user?s.user:''}catch(e){return ''}}
+  function act(name,info){
+    var u=who();if(!u)return;
+    send('inventory',name,u,'',String(info||'').slice(0,120));
   }
   function openOnce(sys,acct,store){
     try{var k=OK+'|'+sys+'|'+dev(),last=parseInt(localStorage.getItem(k)||'0',10);
@@ -1450,7 +1461,7 @@ render();
       localStorage.setItem(k,String(Date.now()))}catch(e){}
     send(sys,'open',acct,store);
   }
-  window.SB_AUDIT={send:send,open:openOnce,flush:flush,dev:dev};
+  window.SB_AUDIT={send:send,open:openOnce,flush:flush,dev:dev,act:act,who:who};
   setTimeout(flush,1200);
   window.addEventListener('online',flush);
 })();
