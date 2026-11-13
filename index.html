@@ -82,7 +82,7 @@ if(a&&a.user&&a.user!=='xzy'&&a.version==='12.0'&&Number(a.expiresAt)>Date.now()
 else if(a)localStorage.removeItem(k);localStorage.removeItem('inventory-query-auth-v119');
 }catch(e){try{localStorage.removeItem('inventory-query-auth-v119')}catch(_){}}</script>
 <script>/* 【18号 2026-11-13】版本守卫：Pages 缓存 + 下拉刷新吃缓存，手机会长期停在旧登录页；首开强制刷一次，sessionStorage 防循环 */
-(function(){try{var V='kucun_20261113_1';if(localStorage.getItem('kucun_build_ver')===V)return;
+(function(){try{var V='kucun_20261113_2';if(localStorage.getItem('kucun_build_ver')===V)return;
 if(sessionStorage.getItem('kucun_build_reloading')===V)return;sessionStorage.setItem('kucun_build_reloading',V);
 localStorage.setItem('kucun_build_ver',V);location.reload(true);}catch(e){}})();</script>
 
@@ -548,7 +548,6 @@ button:focus-visible,input:focus-visible{outline-color:var(--accent)!important}
     <label class="v111-field"><span>账号</span><input id="v111User" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>
     <label class="v111-field"><span>密码</span><input id="v111Pass" name="password" type="password" autocomplete="current-password" required></label>
     <button class="v111-submit" type="submit">登录</button>
-    <p style="margin:10px 0 0;font-size:12px;line-height:1.6;color:#6b7280;text-align:center">账号 = 花名册里的本人姓名（与钉钉一致，带 B / C 后缀可省略）<br>密码统一为 <b>1</b>；共用账号 xzy 已停用</p>
     <div class="v111-login-error" id="v111LoginError" role="alert"></div>
 
   </form>
