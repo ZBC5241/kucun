@@ -53,7 +53,40 @@ if [ $? -ne 0 ]; then alert "9223 通道不可用，价格未刷新（详见 ref
 cd "$PIPE" || { echo "$(date) cd 失败" >> "$LOG"; alert "价格管线目录缺失"; exit 1; }
 "$PY" run_all.py >> "$LOG" 2>&1
 RC=$?
-if [ "$RC" -ne 0 ]; then alert "run_all 失败 RC=$RC，保留旧 promoData.js"; exit $RC; fi
+if [ "$RC" -ne 0 ]; then
+  # 18号 2026-11-14 数据真实性红线：本轮没拉到最新数据，绝不能让页面"看起来像刚更新过"。
+  # 保留旧 promoData.js 的同时把可见告警写进页面并推送标红版，明确写清"当前是旧数据"。
+  alert "run_all 失败 RC=$RC，本轮未拿到用友最新数据；页面已标红旧数据时点"
+  "$PY" - "$KUCUN" "$KUCUNOS" <<'PYEOF' >> "$LOG" 2>&1
+import json, os, sys, datetime
+kucun, kucunos = sys.argv[1], sys.argv[2]
+ap = '/Users/mac/WorkBuddy/2026-09-11-21-21-56/price_promo_pipeline/data/DATA_STALE_ALERT.txt'
+msg = ''
+try:
+    if os.path.exists(ap):
+        msg = open(ap, encoding='utf-8').read().strip()
+except Exception:
+    pass
+if not msg:
+    msg = '本轮用友价格/促销拉取失败，当前显示的是上一轮旧数据，不是本轮最新数据。'
+msg += '（告警时刻 %s）' % datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+for d in (kucun, kucunos):
+    p = os.path.join(d, 'promoData.js')
+    if not os.path.exists(p):
+        continue
+    h = open(p, encoding='utf-8').read().split(';window.DATA_ALERT=')[0].rstrip(';') + ';'
+    h += 'window.DATA_ALERT=' + json.dumps(msg, ensure_ascii=False) + ';'
+    open(p, 'w', encoding='utf-8').write(h)
+    print('[ALERT] 已在', p, '写入旧数据可见告警')
+PYEOF
+  for REPO in "$KUCUN" "$KUCUNOS"; do
+    cd "$REPO" || continue
+    git add promoData.js >> "$LOG" 2>&1
+    git commit -m "alert: 本轮拉取失败，页面标红旧数据时点 $(date '+%F %T')" >> "$LOG" 2>&1 || true
+    git push origin main >> "$LOG" 2>&1 || true
+  done
+  exit $RC
+fi
 
 # 精简：剥 tiers/real/null → kucun/promoData.js
 "$PY" - "$KUCUN" <<'PYEOF' >> "$LOG" 2>&1
