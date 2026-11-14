@@ -82,10 +82,37 @@ for k, v in PD.items():
     r = v.get('retail')
     if r is None: r = v.get('real')
     if r is None: continue
-    slim[k] = {"retail": int(round(r))}
+    # 18号 2026-11-14: 忠实显示用友系统价, 39.9 不许变成 40。
+    # 旧版 int(round(r)) 把 58 条配件价(9.9/19.9/39.9/49.9)四舍五入成整数, 违反价格铁律。
+    try:
+        f = float(r)
+        val = int(f) if abs(f - round(f)) < 1e-9 else round(f, 2)
+    except Exception:
+        continue
+    slim[k] = {"retail": val}
+import datetime as _dt
+def _mt(p):
+    try: return _dt.datetime.fromtimestamp(os.path.getmtime(p)).strftime('%Y-%m-%d %H:%M:%S')
+    except Exception: return None
+# 每块数据的真实采集时刻(用友源数据文件落盘时刻, 非页面生成时间), 便于追溯
+_meta = {
+  'priceFetchedAt': _mt('/Users/mac/WorkBuddy/2026-09-11-21-21-56/price_promo_pipeline/data/price_all.json'),
+  'promoListFetchedAt': _mt('/Users/mac/WorkBuddy/2026-09-11-21-21-56/price_promo_pipeline/data/promo_all.json'),
+  'promoDetailFetchedAt': _mt('/Users/mac/WorkBuddy/2026-09-11-21-21-56/price_promo_pipeline/data/promo_details_raw.json'),
+  'note': '以上为用友源数据文件落盘时刻(采集即落盘), 非页面构建时间'
+}
+# 抓取失败可见告警: 由 pull_promo.py 写, 页面会显式标红, 绝不拿旧缓存冒充新数据
+_alert_path = '/Users/mac/WorkBuddy/2026-09-11-21-21-56/price_promo_pipeline/data/DATA_STALE_ALERT.txt'
+_alert = None
+if os.path.exists(_alert_path):
+    try: _alert = open(_alert_path, encoding='utf-8').read().strip()
+    except Exception: _alert = '部分促销明细抓取失败, 当前显示的可能不是本轮用友真实数据'
 out = ('window.PRICE_DATA=' + json.dumps(slim, ensure_ascii=False, separators=(',', ':')) +
-       ';window.PROMO_DATA=' + json.dumps(PM, ensure_ascii=False, separators=(',', ':')) + ';')
+       ';window.PROMO_DATA=' + json.dumps(PM, ensure_ascii=False, separators=(',', ':')) +
+       ';window.PRICE_META=' + json.dumps(_meta, ensure_ascii=False) +
+       (';window.DATA_ALERT=' + json.dumps(_alert, ensure_ascii=False) if _alert else '') + ';')
 open(os.path.join(kucun, 'promoData.js'), 'w', encoding='utf-8').write(out)
+print('slim meta:', _meta, '| DATA_ALERT:', bool(_alert))
 # kucunos 同源共用同一份(同款 SKU 编码)，两份各自独立存，避免跨仓库联网依赖
 # 注意：kucunos 写入失败不得阻塞 kucun 主链路（历史故障：兜底路径算错导致连续 4 次刷新全挂）
 kucunos = os.environ.get('KUCUNOS') or '/Users/mac/WorkBuddy/2026-08-31-14-14-00/kucunos'

@@ -1871,8 +1871,10 @@ window.COST_DATA = {"meta": {"fetchedAt": "2026-11-09 02:47:36", "source": "用�
       var retail=pr.retail;
       var act=promos.filter(function(x){return x.valid;});
       var cut=0;act.forEach(function(x){if(x.cut>cut)cut=x.cut;});
+      /* 18号 2026-11-14: 价格保留小数后必须规避 JS 浮点长串(19.9-5=14.899999999999999) */
+      var finalPrice=Math.round((retail-cut)*100)/100;
       if(cut>0){
-        s+='<span class="orig cut-orig qv62-val uni-val"><i class="pk">原价</i><i class="pv">'+retail+'</i></span><span class="cut qv62-val uni-val"><i class="pk">直降</i><i class="pv">'+cut+'</i></span><span class="final qv62-val uni-val"><i class="pk">到手</i><i class="pv">'+(retail-cut)+'</i></span>';
+        s+='<span class="orig cut-orig qv62-val uni-val"><i class="pk">原价</i><i class="pv">'+retail+'</i></span><span class="cut qv62-val uni-val"><i class="pk">直降</i><i class="pv">'+cut+'</i></span><span class="final qv62-val uni-val"><i class="pk">到手</i><i class="pv">'+finalPrice+'</i></span>';
       }else{s+='<span class="orig qv62-val uni-val"><i class="pk">原价</i><i class="pv">'+retail+'</i></span>';}
     }
     if(cost!=null){
@@ -1880,6 +1882,9 @@ window.COST_DATA = {"meta": {"fetchedAt": "2026-11-09 02:47:36", "source": "用�
       var tip=tr?('用友近期成交单位成本 · '+tr.d+' · '+(tr.store||'')+' · '+tr.src):'用友近期成交单位成本';
       s+='<span class="cost qv62-val uni-val" title="'+tip+'"><i class="pk">成本</i><i class="pv">'+cost+'</i></span>';
     }
+    /* 数据真实性红线: 抓取失败时显式标红, 绝不拿旧缓存冒充本轮用友真实数据。
+       不带 qv62-val, 故不会被价格眼睛开关遮成圆点 */
+    if(window.DATA_ALERT){s+='<div class="ljc-data-alert" style="color:#ef4444;font-size:11px;line-height:1.4;white-space:normal;margin-top:4px;">⚠️ 数据告警：'+window.DATA_ALERT+'</div>';}
     return s;
   }
   function applyBox(box,show){
