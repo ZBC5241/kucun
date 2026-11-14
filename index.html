@@ -1643,10 +1643,6 @@ form?.addEventListener('submit',async e=>{
   e.preventDefault();if(submitting)return;
   const u=user.value.trim();const p=pass.value.trim();
   if(!u||!p){error.textContent='请输入账号和密码';return}
-  if(u==='xzy'){
-    try{SB_AUDIT.send('inventory','fail',u,'')}catch(e){}
-    pass.value='';user.value='';user.focus();return;
-  }
   const acct=ACCOUNTS[u]?u:(ALIASES[u]||'');   /* 带 B/C 后缀可省略，归一到花名册原名 */
   submitting=true;const btn=form.querySelector('.v111-submit');if(btn){btn.disabled=true;btn.textContent='正在验证…'}
   try{
