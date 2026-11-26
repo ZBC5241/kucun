@@ -179,4 +179,20 @@ else
   git push origin main >> "$LOG" 2>&1
   echo "$(date) kucunos push 完成" >> "$LOG"
 fi
+# 【18号 2026-11-26 根治】桌面唯一交付物随价格刷新自动重出
+# 事故背景：GT7 活动在用友停用后线上当天就对了，但桌面 index.html 停在旧时刻仍显示直降200，
+# 晨哥据此误判"算法又错了"。根因是桌面文件不在自动链路里，只有手动重出才更新。
+# 现在每次价格刷新成功都重出桌面，线上/桌面同一时刻新鲜；失败只记日志，绝不阻塞价格主链路。
+BUILD_OFFLINE="/Users/mac/.workbuddy/skills/kucun-price-promo-pipeline/scripts/build_offline_kucun.py"
+if [ -f "$BUILD_OFFLINE" ]; then
+  "$PY" "$BUILD_OFFLINE" >> "$LOG" 2>&1
+  RC3=$?
+  if [ "$RC3" -ne 0 ]; then
+    echo "$(date '+%F %T') WARN 桌面交付物重出失败(不阻塞价格链路) RC=$RC3，桌面仍是上一轮数据" >> "$LOG"
+  else
+    echo "$(date '+%F %T') 桌面交付物已随本轮价格刷新重出" >> "$LOG"
+  fi
+else
+  echo "$(date '+%F %T') WARN 找不到 build_offline_kucun.py，桌面未重出" >> "$LOG"
+fi
 echo "价格刷新结束 $(date '+%F %T')" >> "$LOG"
